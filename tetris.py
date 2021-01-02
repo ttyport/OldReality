@@ -371,7 +371,7 @@ def main():
                     run = False
                     pygame.display.quit()
                     quit()
-                elif event.key == pygame.K_KP_ENTER:
+                elif event.key == pygame.K_RETURN:
                     run = False
                     main()
                     break
