@@ -40,8 +40,8 @@ player_score = 0
 opponent_score = 0
 
 # Звук
-bounce = pygame.mixer.Sound("data/pong.ogg")
-win = pygame.mixer.Sound("data/score.ogg")
+bounce = pygame.mixer.Sound("resources/pong.ogg")
+win = pygame.mixer.Sound("resources/score.ogg")
 
 
 def ai():
@@ -110,7 +110,7 @@ def draw_player():
 
 
 def draw_text_middle(text, size, color, surface, delta_x=0, delta_y=0):
-    font = pygame.font.Font('data/font.ttf', size)
+    font = pygame.font.Font('resources/font.ttf', size)
     label = font.render(text, True, color)
 
     surface.blit(label, (top_left_x + play_width / 2 - (label.get_width() / 2) + delta_x,
