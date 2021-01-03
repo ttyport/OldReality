@@ -8,10 +8,8 @@ pygame.init()
 screen_width = 800
 screen_height = 700
 
-games_list = ["tetris", "pong"]
+games_list = ["tetris", "pong", "arkanoid"]
 image_list = []
-
-# pkg = importlib.import_module(games_list[0])
 
 x_coord = 0
 
