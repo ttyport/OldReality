@@ -1,34 +1,40 @@
 import pygame
 import random
 
+from configmodel import Config
+
+configs = [
+    Config('4k', 1600, 1400),
+    Config('fullhd', 800, 700),
+    Config('small', 400, 350)
+]
+
 pygame.font.init()
 
 # Глобальные переменные
 
-s_width = 800
-s_height = 700
+screen_width = 800
+screen_height = 700
 try:
     with open("config.txt") as conf:
         conf = conf.read().split("\n")
-        resolution = conf[0].split("=")[1]
-        if resolution == "4K":
-            s_width, s_height = 1600, 1400
-        elif resolution == "FullHD":
-            s_width, s_height = 800, 700
-        elif resolution == "small":
-            s_width, s_height = 400, 350
+        resolution = conf[0].split("=")[1].lower()
+        for config in configs:
+            if resolution == config.resolution_name:
+                screen_width = config.screen_width
+                screen_height = config.screen_height
 except Exception as e:
     print(e)
 
 
-k = 1600 / s_width
+k = 1600 / screen_width
 
 play_width = 600 / k
 play_height = 1200 / k
 block_size = 60 / k
 
-top_left_x = (s_width - play_width) // 2
-top_left_y = s_height - play_height
+top_left_x = (screen_width - play_width) // 2
+top_left_y = screen_height - play_height
 
 # Фигурки
 
@@ -431,7 +437,7 @@ def main_menu():
     pygame.quit()
 
 
-window = pygame.display.set_mode((s_width, s_height))
+window = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Tetris')
 
 main_menu()  # Запуск игры
