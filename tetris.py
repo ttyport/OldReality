@@ -6,7 +6,7 @@ from configmodel import Config
 configs = [
     Config('4k', 1600, 1400),
     Config('fullhd', 800, 700)
-
+]
 pygame.font.init()
 
 # Глобальные переменные
@@ -307,7 +307,7 @@ def main():
 
     while run:
         if not paused:
-            fall_speed = 0.05
+            fall_speed = 0.03
 
             grid = create_grid(locked_positions)
             fall_time += clock.get_rawtime()
