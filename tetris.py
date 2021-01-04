@@ -10,7 +10,6 @@ configs = [
 pygame.font.init()
 
 # Глобальные переменные
-fps = 30
 
 screen_width = 800
 screen_height = 700
@@ -32,6 +31,8 @@ k = 1600 / screen_width
 play_width = 600 / k
 play_height = 1200 / k
 block_size = 60 / k
+
+fps = 30 * k
 
 top_left_x = (screen_width - play_width) // 2
 top_left_y = screen_height - play_height
@@ -303,15 +304,14 @@ def main():
 
     key_left_pressed_time = 0
     key_right_pressed_time = 0
-    pressed_time_for_move = 12
+    pressed_time_for_move = 12 * k
 
-    fall_speed = 0.07
+    fall_speed = 0.14
 
     while run:
         if not paused:
             grid = create_grid(locked_positions)
             fall_time += clock.get_rawtime()
-            clock.tick(fps)
 
             # PIECE FALLING CODE
             if fall_time / 1000 >= fall_speed:
@@ -378,7 +378,7 @@ def main():
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_DOWN]:
-            current_piece.y += 1
+            current_piece.y += 1 
             if not valid_space(current_piece, grid):
                 current_piece.y -= 1
         elif keys[pygame.K_LEFT]:
@@ -419,6 +419,8 @@ def main():
         # Check if user lost
         if check_lost(locked_positions):
             run = False
+
+        clock.tick(fps)
 
     window.fill((0, 0, 0))
     draw_text_middle("You Lost.", int(40 / k), (0, 255, 0), window, delta_y=-30)
