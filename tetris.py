@@ -25,7 +25,6 @@ try:
 except Exception as e:
     print(e)
 
-
 k = 1600 / screen_width
 
 play_width = 600 / k
@@ -308,6 +307,8 @@ def main():
 
     fall_speed = 0.14
 
+    is_blocked_key_down = False
+
     while run:
         if not paused:
             grid = create_grid(locked_positions)
@@ -377,10 +378,11 @@ def main():
                     key_right_pressed_time = 0
 
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_DOWN]:
-            current_piece.y += 1 
+        if keys[pygame.K_DOWN] and not is_blocked_key_down:
+            current_piece.y += 1
             if not valid_space(current_piece, grid):
                 current_piece.y -= 1
+
         elif keys[pygame.K_LEFT]:
             key_left_pressed_time += 1
             if key_left_pressed_time >= pressed_time_for_move:
@@ -412,6 +414,12 @@ def main():
 
             fall_speed -= 0.0005
 
+            if keys[pygame.K_DOWN]:
+                is_blocked_key_down = True
+
+        if not keys[pygame.K_DOWN]:
+            is_blocked_key_down = False
+
         draw_window(window)
         draw_next_shape(next_piece, window)
         pygame.display.update()
@@ -425,7 +433,7 @@ def main():
     window.fill((0, 0, 0))
     draw_text_middle("You Lost.", int(40 / k), (0, 255, 0), window, delta_y=-30)
     draw_text_middle("Press enter to restart,", int(40 / k), (0, 255, 0), window, delta_y=60)
-    draw_text_middle("or esc to exit.",int(40 / k), (0, 255, 0), window, delta_y=90)
+    draw_text_middle("or esc to exit.", int(40 / k), (0, 255, 0), window, delta_y=90)
     pygame.display.update()
     run = True
     while run:
@@ -443,7 +451,6 @@ def main():
                 elif event.key == pygame.K_RETURN:
                     run = False
                     main_menu()
-
 
 
 def check_pause(paused):
