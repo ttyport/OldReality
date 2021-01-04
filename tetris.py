@@ -7,6 +7,7 @@ pygame.font.init()
 
 s_width = 800
 s_height = 700
+fps = 30
 try:
     with open("config.txt") as conf:
         conf = conf.read().split("\n")
@@ -295,13 +296,17 @@ def main():
     fall_time = 0
     paused = False
 
+    key_left_pressed_time = 0
+    key_right_pressed_time = 0
+    pressed_time_for_move = 12
+
     while run:
         if not paused:
-            fall_speed = 0.2
+            fall_speed = 0.05
 
             grid = create_grid(locked_positions)
             fall_time += clock.get_rawtime()
-            clock.tick()
+            clock.tick(fps)
 
             # PIECE FALLING CODE
             if fall_time / 1000 >= fall_speed:
@@ -317,6 +322,16 @@ def main():
             paused = check_pause(paused)
             continue
 
+        def moveShapeLeft():
+            current_piece.x -= 1
+            if not valid_space(current_piece, grid):
+                current_piece.x += 1
+
+        def moveShapeRight():
+            current_piece.x += 1
+            if not valid_space(current_piece, grid):
+                current_piece.x -= 1
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -324,26 +339,25 @@ def main():
                 quit()
 
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    current_piece.x -= 1
-                    if not valid_space(current_piece, grid):
-                        current_piece.x += 1
+                # if event.key == pygame.K_LEFT:
+                #     current_piece.x -= 1
+                #     if not valid_space(current_piece, grid):
+                #         current_piece.x += 1
 
+                # if event.key == pygame.K_RIGHT:
+                #     current_piece.x += 1
+                #     if not valid_space(current_piece, grid):
+                #         current_piece.x -= 1
+                if event.key == pygame.K_LEFT:
+                    moveShapeLeft()
                 elif event.key == pygame.K_RIGHT:
-                    current_piece.x += 1
-                    if not valid_space(current_piece, grid):
-                        current_piece.x -= 1
+                    moveShapeRight()
+
                 elif event.key == pygame.K_UP:
                     # rotate shape
                     current_piece.rotation = current_piece.rotation + 1 % len(current_piece.shape)
                     if not valid_space(current_piece, grid):
                         current_piece.rotation = current_piece.rotation - 1 % len(current_piece.shape)
-
-                if event.key == pygame.K_DOWN:
-                    # move shape down
-                    current_piece.y += 1
-                    if not valid_space(current_piece, grid):
-                        current_piece.y -= 1
 
                 if event.key == pygame.K_SPACE:
                     paused = not paused
@@ -351,6 +365,25 @@ def main():
                 if event.key == pygame.K_ESCAPE:
                     import main
                     main.main()
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_LEFT:
+                    key_left_pressed_time = 0
+                elif event.key == pygame.K_RIGHT:
+                    key_right_pressed_time = 0
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_DOWN]:
+            current_piece.y += 1
+            if not valid_space(current_piece, grid):
+                current_piece.y -= 1
+        elif keys[pygame.K_LEFT]:
+            key_left_pressed_time += 1
+            if key_left_pressed_time >= pressed_time_for_move:
+                moveShapeLeft()
+        elif keys[pygame.K_RIGHT]:
+            key_right_pressed_time += 1
+            if key_right_pressed_time >= pressed_time_for_move:
+                moveShapeRight()
 
         shape_pos = convert_shape_format(current_piece)
 
