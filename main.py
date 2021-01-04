@@ -3,14 +3,6 @@ import importlib
 import sys
 import os
 
-from configmodel import Config
-
-configs = [
-    Config('4k', 1600, 1400),
-    Config('fullhd', 800, 700),
-    Config('small', 400, 350)
-]
-
 pygame.init()
 
 screen_width = 1600
@@ -19,11 +11,11 @@ screen_height = 1400
 
 with open("config.txt") as conf:
     conf = conf.read().split("\n")
-    resolution = conf[0].split("=")[1].lower()
-    for config in configs:
-        if resolution == config.resolution_name:
-            screen_width = config.screen_width
-            screen_height = config.screen_height
+    resolution = conf[0].split("=")[1]
+    if resolution == "4K":
+        screen_width, screen_height = 1600, 1400
+    elif resolution == "FullHD":
+        screen_width, screen_height = 800, 700
 
 
 k = 1600 / screen_width
@@ -51,6 +43,7 @@ for el in games_list:
 
 
 def draw_text_middle(text, size, color, surface, delta_x=0, delta_y=0, left=False):
+    size = size - 5 * (1 if int(k) == 2 else 2)
     font = pygame.font.Font('resources/fonts/font.ttf', size)
     label = font.render(text, True, color)
     if left:
@@ -62,7 +55,7 @@ def draw_text_middle(text, size, color, surface, delta_x=0, delta_y=0, left=Fals
 
 
 def update_cursor():
-    draw_text_middle(">", int(100 / k), (0, 255, 0), window, delta_x=int(300 / k), delta_y=x_coord * 100 / k)
+    draw_text_middle(">", int(100 / k), (0, 255, 0), window, delta_x=int(300 / k), delta_y=x_coord * 104 / k - 20 / k)
     window.blit(pygame.transform.scale(image_list[x_coord], (int(800 / k), int(800 / k))), (200 / k, 400 / k))
     border = pygame.Rect(200 / k, 400 / k, 800 / k, 800 / k)
     pygame.draw.rect(window, (0, 255, 0), border, 5)
@@ -70,7 +63,8 @@ def update_cursor():
 
 def draw_list():
     for i, el in enumerate(games_list):
-        draw_text_middle(el, int(100 / k), (0, 255, 0), window, delta_x=400 / k, delta_y=i * 100 / k - 200 / k, left=True)
+        draw_text_middle(el, int(100 / k), (0, 255, 0), window, delta_x=400 / k - 50 * (0 if int(k) == 2 else 1),
+                         delta_y=i * 100 / k - 200 / k, left=True)
 
 
 def main():
