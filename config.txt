@@ -1,1 +1,1 @@
-Resolution=4K
+Resolution=fullhd
