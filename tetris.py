@@ -305,10 +305,10 @@ def main():
     key_right_pressed_time = 0
     pressed_time_for_move = 12
 
+    fall_speed = 0.07
+
     while run:
         if not paused:
-            fall_speed = 0.03
-
             grid = create_grid(locked_positions)
             fall_time += clock.get_rawtime()
             clock.tick(fps)
@@ -409,6 +409,8 @@ def main():
 
             # call four times to check for multiple clear rows
             clear_rows(grid, locked_positions)
+
+            fall_speed -= 0.0005
 
         draw_window(window)
         draw_next_shape(next_piece, window)
