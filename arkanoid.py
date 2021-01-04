@@ -185,6 +185,7 @@ def main():
     init_objects()
     global v_player, v_y, v_x, lives
     init_bricks()
+    paused = False
     running = True
     while running:
         window.fill((0, 0, 0))
@@ -205,23 +206,43 @@ def main():
                 if event.key == pygame.K_ESCAPE:
                     import main
                     main.main()
-        draw_player()
-        draw_ball()
-        draw_bricks()
-        if time:
-            restart()
+                if event.key == pygame.K_SPACE:
+                    paused = not paused
+        if not paused:
+            draw_player()
+            draw_ball()
+            draw_bricks()
+            if time:
+                restart()
 
-        pygame.draw.rect(window, (0, 255, 0), border, 5)
-        pygame.draw.rect(window, (0, 255, 0), player, border_radius=5)
-        pygame.draw.rect(window, (0, 255, 0), ball, border_radius=int(ball_size / 2))
-        draw_text_middle("Arkanoid", int(100 / k), (0, 255, 0), window, delta_y=-450 / k)
-        draw_text_middle(f"Score: {score}", int(100 / k), (0, 255, 0), window, delta_y=-450 / k,
-                         delta_x= -screen_width / 3)
-        draw_text_middle(f"Lives: {lives}", int(100 / k), (0, 255, 0), window, delta_y=-450 / k,
-                         delta_x=screen_width / 3)
-        pygame.display.update()
-        clock.tick(int(60 / k))
+            pygame.draw.rect(window, (0, 255, 0), border, 5)
+            pygame.draw.rect(window, (0, 255, 0), player, border_radius=5)
+            pygame.draw.rect(window, (0, 255, 0), ball, border_radius=int(ball_size / 2))
+            draw_text_middle("Arkanoid", int(100 / k), (0, 255, 0), window, delta_y=-450 / k)
+            draw_text_middle(f"Score: {score}", int(100 / k), (0, 255, 0), window, delta_y=-450 / k,
+                             delta_x= -screen_width / 3)
+            draw_text_middle(f"Lives: {lives}", int(100 / k), (0, 255, 0), window, delta_y=-450 / k,
+                             delta_x=screen_width / 3)
+            pygame.display.update()
+            clock.tick(int(60 / k))
+        else:
+            window.fill((0, 0, 0))
+            draw_text_middle('Paused', int(120 / k), (0, 255, 0), window)
+            pygame.display.update()
+            paused = check_pause(paused)
+            continue
     pygame.quit()
+
+
+def check_pause(paused):
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.display.quit()
+            quit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                paused = not paused
+    return paused
 
 
 def main_menu():
