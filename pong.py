@@ -5,8 +5,7 @@ from configmodel import Config
 
 configs = [
     Config('4k', 1600, 1400),
-    Config('fullhd', 800, 700),
-    Config('small', 400, 350)
+    Config('fullhd', 800, 700)
 ]
 
 # Инициализация pygame
