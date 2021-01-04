@@ -3,19 +3,27 @@ import importlib
 import sys
 import os
 
+from configmodel import Config
+
+configs = [
+    Config('4k', 1600, 1400),
+    Config('fullhd', 805, 700)
+]
+
 pygame.init()
+clock = pygame.time.Clock()
 
 screen_width = 1600
 screen_height = 1400
 
-
 with open("config.txt") as conf:
     conf = conf.read().split("\n")
-    resolution = conf[0].split("=")[1]
-    if resolution == "4K":
-        screen_width, screen_height = 1600, 1400
-    elif resolution == "FullHD":
-        screen_width, screen_height = 800, 700
+    resolution = conf[0].split("=")[1].lower()
+
+    for config in configs:
+        if resolution == config.resolution_name:
+            screen_width = config.screen_width
+            screen_height = config.screen_height
 
 
 k = 1600 / screen_width
