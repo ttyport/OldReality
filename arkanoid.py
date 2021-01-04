@@ -163,7 +163,7 @@ def main_menu():
     while run:
         window.fill((0, 0, 0))
 
-        draw_text_middle('Тест', int(120 / k), (0, 255, 0), window)
+        draw_text_middle('Press any key to begin.', int(120 / k), (0, 255, 0), window)
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
