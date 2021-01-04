@@ -7,7 +7,7 @@ from configmodel import Config
 
 configs = [
     Config('4k', 1600, 1400),
-    Config('fullhd', 805, 700)
+    Config('fullhd', 800, 700)
 ]
 
 pygame.init()
@@ -63,7 +63,9 @@ def draw_text_middle(text, size, color, surface, delta_x=0, delta_y=0, left=Fals
 
 
 def update_cursor():
-    draw_text_middle(">", int(100 / k), (0, 255, 0), window, delta_x=int(300 / k), delta_y=x_coord * 104 / k - 20 / k)
+    draw_text_middle(">", int(100 / k), (0, 255, 0), window, delta_x=int(300 / k),
+                     delta_y=x_coord * 100 / k - (15 if int(k) == 1 else 10))
+    print(screen_width, screen_height)
     window.blit(pygame.transform.scale(image_list[x_coord], (int(800 / k), int(800 / k))), (200 / k, 400 / k))
     border = pygame.Rect(200 / k, 400 / k, 800 / k, 800 / k)
     pygame.draw.rect(window, (0, 255, 0), border, 5)
@@ -71,7 +73,7 @@ def update_cursor():
 
 def draw_list():
     for i, el in enumerate(games_list):
-        draw_text_middle(el, int(100 / k), (0, 255, 0), window, delta_x=400 / k - 50 * (0 if int(k) == 2 else 1),
+        draw_text_middle(el, int(100 / k), (0, 255, 0), window, delta_x=400 / k,
                          delta_y=i * 100 / k - 200 / k, left=True)
 
 
