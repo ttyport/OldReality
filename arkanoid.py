@@ -8,6 +8,16 @@ clock = pygame.time.Clock()
 screen_width = 1610
 screen_height = 1400
 
+with open("config.txt") as conf:
+    conf = conf.read().split("\n")
+    resolution = conf[0].split("=")[1]
+    if resolution == "4K":
+        screen_width, screen_height = 1610, 1400
+    elif resolution == "FullHD":
+        screen_width, screen_height = 805, 700
+    elif resolution == "small":
+        screen_width, screen_height = 400, 350
+
 k = 1610 / screen_width
 
 play_height = 1198 / k
@@ -24,8 +34,8 @@ player = pygame.Rect(screen_width / 2 - player_width / 2, screen_height - player
 ball = pygame.Rect(player.center[0], player.top - ball_size,
                    ball_size, ball_size)
 
-v_x = random.choice((-7, 7))
-v_y = 7
+v_x = random.choice((-10, 10))
+v_y = 10
 v_player = 0
 
 time = True
@@ -41,8 +51,7 @@ def init_bricks():
 
 
 def draw_text_middle(text, size, color, surface, delta_x=0, delta_y=0, left=False):
-    size = int(size / k)
-    font = pygame.font.Font('resources/font.ttf', size)
+    font = pygame.font.Font('resources/fonts/font.ttf', size)
     label = font.render(text, True, color)
     if left:
         surface.blit(label, (screen_width / 2 + delta_x,
@@ -50,7 +59,6 @@ def draw_text_middle(text, size, color, surface, delta_x=0, delta_y=0, left=Fals
     else:
         surface.blit(label, (screen_width / 2 - (label.get_width() / 2) + delta_x,
                             screen_height / 2 - label.get_height() * 2 + delta_y))
-
 
 def draw_player():
     player.x += v_player
@@ -70,8 +78,7 @@ def restart():
     if current_time - time < 2100:
         v_x, v_y = 0, 0
     else:
-        v_x, v_y = random.choice((-7, 7)), 7
-        print(v_x, v_y)
+        v_x, v_y = random.choice((-10, 10)), 10
         time = None
 
 
@@ -97,7 +104,7 @@ def draw_ball():
 def draw_bricks():
     global v_y, v_x
     for el in bricks:
-        pygame.draw.rect(screen, (0, 255, 0), el, border_radius=2)
+        pygame.draw.rect(window, (0, 255, 0), el, border_radius=2)
 
     for el in bricks:
         if ball.colliderect(el):
@@ -117,37 +124,56 @@ def main():
     init_bricks()
     running = True
     while running:
-        screen.fill((0, 0, 0))
+        window.fill((0, 0, 0))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
                 quit()
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_RIGHT:
-                    v_player -= 7
+                    v_player -= 10
                 elif event.key == pygame.K_LEFT:
-                    v_player += 7
+                    v_player += 10
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
-                    v_player += 7
+                    v_player += 10
                 elif event.key == pygame.K_LEFT:
-                    v_player -= 7
+                    v_player -= 10
+                if event.key == pygame.K_ESCAPE:
+                    import main
+                    main.main()
         draw_player()
         draw_ball()
         draw_bricks()
         if time:
             restart()
 
-        pygame.draw.rect(screen, (0, 255, 0), border, 5)
-        pygame.draw.rect(screen, (0, 255, 0), player, border_radius=5)
-        pygame.draw.rect(screen, (0, 255, 0), ball, border_radius=int(ball_size / 2))
-        draw_text_middle("Arkanoid", 100, (0, 255, 0), screen, delta_y=-450 / k)
+        pygame.draw.rect(window, (0, 255, 0), border, 5)
+        pygame.draw.rect(window, (0, 255, 0), player, border_radius=5)
+        pygame.draw.rect(window, (0, 255, 0), ball, border_radius=int(ball_size / 2))
+        draw_text_middle("Arkanoid", int(100 / 2), (0, 255, 0), window, delta_y=-450 / k)
         pygame.display.update()
-        clock.tick(60)
+        clock.tick(int(60 / k))
     pygame.quit()
 
 
-screen = pygame.display.set_mode((screen_width, screen_height))
+def main_menu():
+    run = True
+    while run:
+        window.fill((0, 0, 0))
+
+        draw_text_middle('Press any key to begin.', int(120 / k), (0, 255, 0), window)
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+
+            if event.type == pygame.KEYDOWN:
+                main()
+    pygame.quit()
+
+
+window = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Arkanoid')
 
-main()
+main_menu()

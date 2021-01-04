@@ -4,8 +4,22 @@ import random
 pygame.font.init()
 
 # Глобальные переменные
+
 s_width = 800
 s_height = 700
+try:
+    with open("config.txt") as conf:
+        conf = conf.read().split("\n")
+        resolution = conf[0].split("=")[1]
+        if resolution == "4K":
+            s_width, s_height = 1600, 1400
+        elif resolution == "FullHD":
+            s_width, s_height = 800, 700
+        elif resolution == "small":
+            s_width, s_height = 400, 350
+except Exception as e:
+    print(e)
+
 
 k = 1600 / s_width
 
@@ -191,7 +205,7 @@ def get_shape():
 
 
 def draw_text_middle(text, size, color, surface, delta_x=0, delta_y=0):
-    font = pygame.font.Font('resources/font.ttf', size)
+    font = pygame.font.Font('resources/fonts/font.ttf', size)
     label = font.render(text, True, color)
 
     surface.blit(label, (top_left_x + play_width / 2 - (label.get_width() / 2) + delta_x,
@@ -230,7 +244,7 @@ def clear_rows(grid, locked):
 
 
 def draw_next_shape(shape, surface):
-    font = pygame.font.Font('resources/font.ttf', int(60 / k))
+    font = pygame.font.Font('resources/fonts/font.ttf', int(60 / k))
     label = font.render('Next Shape', True, (0, 255, 0))
 
     sx = top_left_x + play_width + 50
@@ -252,7 +266,7 @@ def draw_next_shape(shape, surface):
 def draw_window(surface):
     surface.fill((0, 0, 0))
     # Tetris Title
-    font = pygame.font.Font('resources/font.ttf', int(120 / k))
+    font = pygame.font.Font('resources/fonts/font.ttf', int(120 / k))
     label = font.render('TETRIS', True, (0, 255, 0))
 
     surface.blit(label, (top_left_x + play_width / 2 - (label.get_width() / 2), block_size))
@@ -290,15 +304,15 @@ def main():
             clock.tick()
 
             # PIECE FALLING CODE
-            if fall_time/1000 >= fall_speed:
+            if fall_time / 1000 >= fall_speed:
                 fall_time = 0
                 current_piece.y += 1
                 if not (valid_space(current_piece, grid)) and current_piece.y > 0:
                     current_piece.y -= 1
                     change_piece = True
         else:
-            win.fill((0, 0, 0))
-            draw_text_middle('Paused', int(120 / k), (0, 255, 0), win)
+            window.fill((0, 0, 0))
+            draw_text_middle('Paused', int(120 / k), (0, 255, 0), window)
             pygame.display.update()
             paused = check_pause(paused)
             continue
@@ -334,6 +348,10 @@ def main():
                 if event.key == pygame.K_SPACE:
                     paused = not paused
 
+                if event.key == pygame.K_ESCAPE:
+                    import main
+                    main.main()
+
         shape_pos = convert_shape_format(current_piece)
 
         # add piece to the grid for drawing
@@ -354,18 +372,18 @@ def main():
             # call four times to check for multiple clear rows
             clear_rows(grid, locked_positions)
 
-        draw_window(win)
-        draw_next_shape(next_piece, win)
+        draw_window(window)
+        draw_next_shape(next_piece, window)
         pygame.display.update()
 
         # Check if user lost
         if check_lost(locked_positions):
             run = False
 
-    win.fill((0, 0, 0))
-    draw_text_middle("You Lost.", 40, (0, 255, 0), win, delta_y=-30)
-    draw_text_middle("Press enter to restart,", 40, (0, 255, 0), win, delta_y=60)
-    draw_text_middle("or esc to exit.", 40, (0, 255, 0), win, delta_y=90)
+    window.fill((0, 0, 0))
+    draw_text_middle("You Lost.", int(40 / k), (0, 255, 0), window, delta_y=-30)
+    draw_text_middle("Press enter to restart,", int(40 / k), (0, 255, 0), window, delta_y=60)
+    draw_text_middle("or esc to exit.",int(40 / k), (0, 255, 0), window, delta_y=90)
     pygame.display.update()
     run = True
     while run:
@@ -400,9 +418,9 @@ def check_pause(paused):
 def main_menu():
     run = True
     while run:
-        win.fill((0, 0, 0))
+        window.fill((0, 0, 0))
 
-        draw_text_middle('Press any key to begin.', 60, (0, 255, 0), win)
+        draw_text_middle('Press any key to begin.', int(120 / k), (0, 255, 0), window)
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -413,7 +431,7 @@ def main_menu():
     pygame.quit()
 
 
-win = pygame.display.set_mode((s_width, s_height))
+window = pygame.display.set_mode((s_width, s_height))
 pygame.display.set_caption('Tetris')
 
 main_menu()  # Запуск игры
