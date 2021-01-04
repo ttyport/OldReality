@@ -1,6 +1,14 @@
 import pygame
 import random
 
+from configmodel import Config
+
+configs = [
+    Config('4k', 1600, 1400),
+    Config('fullhd', 800, 700),
+    Config('small', 400, 350)
+]
+
 # Инициализация pygame
 pygame.init()
 clock = pygame.time.Clock()
@@ -11,13 +19,11 @@ screen_height = 1400
 
 with open("config.txt") as conf:
     conf = conf.read().split("\n")
-    resolution = conf[0].split("=")[1]
-    if resolution == "4K":
-        screen_width, screen_height = 1600, 1400
-    elif resolution == "FullHD":
-        screen_width, screen_height = 800, 700
-    elif resolution == "small":
-        screen_width, screen_height = 400, 350
+    resolution = conf[0].split("=")[1].lower()
+    for config in configs:
+        if resolution == config.resolution_name:
+            screen_width = config.screen_width
+            screen_height = config.screen_height
 
 k = 1600 / screen_width
 
