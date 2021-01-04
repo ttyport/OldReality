@@ -6,9 +6,12 @@ pygame.font.init()
 # Глобальные переменные
 s_width = 800
 s_height = 700
-play_width = 300
-play_height = 600
-block_size = 30
+
+k = 1600 / s_width
+
+play_width = 600 / k
+play_height = 1200 / k
+block_size = 60 / k
 
 top_left_x = (s_width - play_width) // 2
 top_left_y = s_height - play_height
@@ -199,11 +202,11 @@ def draw_grid(surface, row, col):
     sx = top_left_x
     sy = top_left_y
     for i in range(row):
-        pygame.draw.line(surface, (128, 128, 128), (sx, sy + i * 30),
-                         (sx + play_width, sy + i * 30))  # Горизонтальные линии
+        pygame.draw.line(surface, (128, 128, 128), (sx, sy + i * block_size),
+                         (sx + play_width, sy + i * block_size))  # Горизонтальные линии
         for j in range(col):
-            pygame.draw.line(surface, (128, 128, 128), (sx + j * 30, sy),
-                             (sx + j * 30, sy + play_height))  # Вертикальные линии
+            pygame.draw.line(surface, (128, 128, 128), (sx + j * block_size, sy),
+                             (sx + j * block_size, sy + play_height))  # Вертикальные линии
 
 
 def clear_rows(grid, locked):
@@ -227,7 +230,7 @@ def clear_rows(grid, locked):
 
 
 def draw_next_shape(shape, surface):
-    font = pygame.font.Font('resources/font.ttf', 30)
+    font = pygame.font.Font('resources/font.ttf', int(60 / k))
     label = font.render('Next Shape', True, (0, 255, 0))
 
     sx = top_left_x + play_width + 50
@@ -238,23 +241,26 @@ def draw_next_shape(shape, surface):
         row = list(line)
         for j, column in enumerate(row):
             if column == '0':
-                pygame.draw.rect(surface, shape.color, (sx + j * 30, sy + i * 30, 30, 30))
-                pygame.draw.rect(surface, (128, 128, 128), (sx + j * 30, sy + i * 30, 30, 30), 1)
+                pygame.draw.rect(surface, shape.color, (sx + j * block_size, sy + i * block_size,
+                                                        block_size, block_size))
+                pygame.draw.rect(surface, (128, 128, 128), (sx + j * block_size, sy + i * block_size,
+                                                            block_size, block_size), 1)
 
-    surface.blit(label, (sx + 10, sy - 30))
+    surface.blit(label, (sx + 20 / k, sy - block_size))
 
 
 def draw_window(surface):
     surface.fill((0, 0, 0))
     # Tetris Title
-    font = pygame.font.Font('resources/font.ttf', 60)
+    font = pygame.font.Font('resources/font.ttf', int(120 / k))
     label = font.render('TETRIS', True, (0, 255, 0))
 
-    surface.blit(label, (top_left_x + play_width / 2 - (label.get_width() / 2), 30))
+    surface.blit(label, (top_left_x + play_width / 2 - (label.get_width() / 2), block_size))
 
     for i in range(len(grid)):
         for j in range(len(grid[i])):
-            pygame.draw.rect(surface, grid[i][j], (top_left_x + j * 30, top_left_y + i * 30, 30, 30), 0)
+            pygame.draw.rect(surface, grid[i][j], (top_left_x + j * block_size, top_left_y + i * block_size,
+                                                   block_size, block_size), 0)
 
     # Рисуем клетки и границы
     draw_grid(surface, 20, 10)
@@ -292,7 +298,7 @@ def main():
                     change_piece = True
         else:
             win.fill((0, 0, 0))
-            draw_text_middle('Paused', 60, (0, 255, 0), win)
+            draw_text_middle('Paused', int(120 / k), (0, 255, 0), win)
             pygame.display.update()
             paused = check_pause(paused)
             continue
@@ -324,6 +330,9 @@ def main():
                     current_piece.y += 1
                     if not valid_space(current_piece, grid):
                         current_piece.y -= 1
+
+                if event.key == pygame.K_SPACE:
+                    paused = not paused
 
         shape_pos = convert_shape_format(current_piece)
 
