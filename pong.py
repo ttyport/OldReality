@@ -51,7 +51,7 @@ green = (0, 255, 0)
 v_x = 10
 v_y = 10
 v_player = 0
-v_opponent = 10
+v_opponent = 7
 
 # Время
 time = True
@@ -103,7 +103,7 @@ def draw_ball():
     ball.x += v_x
     ball.y += v_y
 
-    if ball.top <= top_left_y or ball.bottom >= play_height + top_left_y:
+    if ball.top <= top_left_y + 5 or ball.bottom >= play_height + top_left_y:
         v_y *= -1
         pygame.mixer.Sound.play(bounce)
     if ball.left <= top_left_x:
