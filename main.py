@@ -65,7 +65,6 @@ def draw_text_middle(text, size, color, surface, delta_x=0, delta_y=0, left=Fals
 def update_cursor():
     draw_text_middle(">", int(100 / k), (0, 255, 0), window, delta_x=int(300 / k),
                      delta_y=x_coord * 100 / k - (15 if int(k) == 1 else 10))
-    print(screen_width, screen_height)
     window.blit(pygame.transform.scale(image_list[x_coord], (int(800 / k), int(800 / k))), (200 / k, 400 / k))
     border = pygame.Rect(200 / k, 400 / k, 800 / k, 800 / k)
     pygame.draw.rect(window, (0, 255, 0), border, 5)

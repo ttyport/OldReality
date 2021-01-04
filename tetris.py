@@ -440,8 +440,8 @@ def main():
                     quit()
                 elif event.key == pygame.K_RETURN:
                     run = False
-                    main()
-                    break
+                    main_menu()
+
 
 
 def check_pause(paused):
