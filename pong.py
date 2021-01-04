@@ -12,11 +12,11 @@ screen_height = 1400
 with open("config.txt") as conf:
     conf = conf.read().split("\n")
     resolution = conf[0].split("=")[1]
-    if resolution == "4K":
+    if resolution.lower() == "4k":
         screen_width, screen_height = 1600, 1400
-    elif resolution == "FullHD":
+    elif resolution.lower() == "fullhd":
         screen_width, screen_height = 800, 700
-    elif resolution == "small":
+    elif resolution.lower() == "small":
         screen_width, screen_height = 400, 350
 
 k = 1600 / screen_width

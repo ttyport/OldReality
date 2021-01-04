@@ -11,11 +11,11 @@ try:
     with open("config.txt") as conf:
         conf = conf.read().split("\n")
         resolution = conf[0].split("=")[1]
-        if resolution == "4K":
+        if resolution.lower() == "4k":
             s_width, s_height = 1600, 1400
-        elif resolution == "FullHD":
+        elif resolution.lower() == "fullhd":
             s_width, s_height = 800, 700
-        elif resolution == "small":
+        elif resolution.lower() == "small":
             s_width, s_height = 400, 350
 except Exception as e:
     print(e)
