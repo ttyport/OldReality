@@ -60,6 +60,7 @@ def draw_text_middle(text, size, color, surface, delta_x=0, delta_y=0, left=Fals
         surface.blit(label, (screen_width / 2 - (label.get_width() / 2) + delta_x,
                             screen_height / 2 - label.get_height() * 2 + delta_y))
 
+
 def draw_player():
     player.x += v_player
     if player.x <= top_left_x:
@@ -162,7 +163,7 @@ def main_menu():
     while run:
         window.fill((0, 0, 0))
 
-        draw_text_middle('Press any key to begin.', int(120 / k), (0, 255, 0), window)
+        draw_text_middle('Тест', int(120 / k), (0, 255, 0), window)
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
