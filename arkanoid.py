@@ -6,8 +6,7 @@ from configmodel import Config
 
 configs = [
     Config('4k', 1610, 1400),
-    Config('fullhd', 805, 700),
-    Config('small', 400, 500)
+    Config('fullhd', 805, 700)
 ]
 
 pygame.init()
@@ -78,7 +77,6 @@ def draw_player():
 
 def restart():
     global v_x, v_y, time
-    player.x, player.y = screen_width / 2 - player_width / 2, screen_height - player_height - 20
     ball.x, ball.y = player.center[0] - ball_size / 2, player.top - ball_size
 
     current_time = pygame.time.get_ticks()
@@ -116,13 +114,13 @@ def draw_bricks():
 
     for el in bricks:
         if ball.colliderect(el):
-            if abs(ball.right - el.left) < 10:
+            if abs(ball.right - el.left) < 15:
                 v_x *= -1
-            elif abs(ball.left - el.right) < 10:
+            elif abs(ball.left - el.right) < 15:
                 v_x *= -1
-            elif abs(ball.bottom - el.top) < 10 and v_y > 0:
+            elif abs(ball.bottom - el.top) < 15 and v_y > 0:
                 v_y *= -1
-            elif abs(ball.top - el.bottom) < 10 and v_y < 0:
+            elif abs(ball.top - el.bottom) < 15 and v_y < 0:
                 v_y *= -1
             bricks.remove(el)
 
