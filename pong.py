@@ -8,17 +8,33 @@ clock = pygame.time.Clock()
 # Глобальные переменные
 screen_width = 1600
 screen_height = 1400
-ball_size = 30
-play_height = 1198
-play_width = 1500
+
+with open("config.txt") as conf:
+    conf = conf.read().split("\n")
+    resolution = conf[0].split("=")[1]
+    if resolution == "4K":
+        screen_width, screen_height = 1600, 1400
+    elif resolution == "FullHD":
+        screen_width, screen_height = 800, 700
+    elif resolution == "small":
+        screen_width, screen_height = 400, 350
+
+k = 1600 / screen_width
+
+ball_size = 30 / k
+play_height = 1198 / k
+play_width = 1500 / k
 top_left_x = (screen_width - play_width) // 2
 top_left_y = screen_height - play_height - 2
+
+platform_height = 140 / k
+platform_width = 10 / k
 
 # Рисование основных элементов окна
 ball = pygame.Rect(play_width / 2 - ball_size / 2, play_height / 2 - ball_size / 2,
                    ball_size, ball_size)
-opponent = pygame.Rect(play_width + 20, play_height / 2 + 70, 10, 140)
-player = pygame.Rect(70, play_height / 2 + 70, 10, 140)
+opponent = pygame.Rect(play_width + 20 / k, play_height / 2 + 20 / k + top_left_x, platform_width, platform_height)
+player = pygame.Rect(20 / k + top_left_x, play_height / 2 + 20 / k + top_left_x, platform_width, platform_height)
 border = pygame.Rect(top_left_x, top_left_y, play_width, play_height)
 
 # Переменные цвета
@@ -26,10 +42,10 @@ bg_color = (0, 0, 0)
 green = (0, 255, 0)
 
 # Переменные скорости
-v_x = 7
-v_y = 7
+v_x = 10
+v_y = 10
 v_player = 0
-v_opponent = 7
+v_opponent = 10
 
 # Время
 time = True
@@ -40,8 +56,8 @@ player_score = 0
 opponent_score = 0
 
 # Звук
-bounce = pygame.mixer.Sound("resources/pong.ogg")
-win = pygame.mixer.Sound("resources/score.ogg")
+bounce = pygame.mixer.Sound("resources/sounds/pong.ogg")
+win = pygame.mixer.Sound("resources/sounds/score.ogg")
 
 
 def ai():
@@ -63,17 +79,16 @@ def restart():
     current_time = pygame.time.get_ticks()
 
     if current_time - time < 700:
-        draw_text_middle("3", 100, (0, 255, 0), window, delta_x=100, delta_y=150)
+        draw_text_middle("3", int(100 / k), (0, 255, 0), window, delta_x=100 / k, delta_y=150 / k)
         v_x, v_y = 0, 0
     elif current_time - time < 1400:
-        draw_text_middle("2", 100, (0, 255, 0), window, delta_x=100, delta_y=150)
+        draw_text_middle("2", int(100 / k), (0, 255, 0), window, delta_x=100 / k, delta_y=150 / k)
         v_x, v_y = 0, 0
     elif current_time - time < 2100:
-        draw_text_middle("1", 100, (0, 255, 0), window, delta_x=100, delta_y=150)
+        draw_text_middle("1", int(100 / k), (0, 255, 0), window, delta_x=100 / k, delta_y=150 / k)
         v_x, v_y = 0, 0
     else:
-        v_y = 7 * random.choice((-1, 1))
-        v_x = 7 * random.choice((-1, 1))
+        v_x, v_y = random.choice((-10, 10)), 10
         time = None
 
 
@@ -110,7 +125,7 @@ def draw_player():
 
 
 def draw_text_middle(text, size, color, surface, delta_x=0, delta_y=0):
-    font = pygame.font.Font('resources/font.ttf', size)
+    font = pygame.font.Font('resources/fonts/font.ttf', size)
     label = font.render(text, True, color)
 
     surface.blit(label, (top_left_x + play_width / 2 - (label.get_width() / 2) + delta_x,
@@ -129,17 +144,21 @@ def main():
                 quit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_DOWN:
-                    v_player += 7
+                    v_player += 10
                 elif event.key == pygame.K_UP:
-                    v_player -= 7
+                    v_player -= 10
                 if event.key == pygame.K_SPACE:
                     paused = not paused
 
+                if event.key == pygame.K_ESCAPE:
+                    import main
+                    main.main()
+
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_DOWN:
-                    v_player -= 7
+                    v_player -= 10
                 elif event.key == pygame.K_UP:
-                    v_player += 7
+                    v_player += 10
         if not paused:
             draw_ball()
             draw_player()
@@ -153,7 +172,7 @@ def main():
             pygame.draw.rect(window, green, border, 5)
         else:
             window.fill((0, 0, 0))
-            draw_text_middle('Paused', 60, (0, 255, 0), window)
+            draw_text_middle('Paused', int(60 / k), (0, 255, 0), window)
             pygame.display.update()
             paused = check_pause(paused)
             continue
@@ -161,10 +180,10 @@ def main():
         if time:
             restart()
 
-        draw_text_middle("Pong", 100, (0, 255, 0), window, delta_y=-550)
-        draw_text_middle(f"{player_score}:{opponent_score}", 50, (0, 255, 0), window, delta_y=-550)
+        draw_text_middle("Pong", int(100 / k), (0, 255, 0), window, delta_y=-550 / k)
+        draw_text_middle(f"{player_score}:{opponent_score}", int(50 / k), (0, 255, 0), window, delta_y=-550 / k)
         pygame.display.flip()
-        clock.tick(60)
+        clock.tick(int(60 / k))
 
 
 def check_pause(paused):
@@ -183,7 +202,7 @@ def main_menu():
     while run:
         window.fill((0, 0, 0))
 
-        draw_text_middle('Press any key to begin.', 60, (0, 255, 0), window)
+        draw_text_middle('Press any key to begin.', int(120 / k), (0, 255, 0), window)
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
