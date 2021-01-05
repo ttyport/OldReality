@@ -30,16 +30,12 @@ except Exception as e:
 with open(f"resources/langs/tetris_{lang}.json") as text:
     data = json.load(text)
 
-
 k = 1600 / screen_width
 
 fps = 60 / k
 play_width = 600 / k
 play_height = 1200 / k
 block_size = 60 / k
-
-fps = 60 / k
-
 
 top_left_x = (screen_width - play_width) // 2
 top_left_y = screen_height - play_height
@@ -317,9 +313,11 @@ def main():
     falls_to_stage_up = 6
     fall_speed_stages = [i / 100 for i in range(14, 3, -2)]
     print(fall_speed_stages)
-    def get_fall_speed_current_stage(): 
+
+    def get_fall_speed_current_stage():
         return min(falls_number // falls_to_stage_up, len(fall_speed_stages) - 1)
-    def get_fall_speed(): 
+
+    def get_fall_speed():
         return fall_speed_stages[get_fall_speed_current_stage()]
 
     is_blocked_key_down = False
