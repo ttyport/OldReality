@@ -1,6 +1,5 @@
 import pygame
 import random
-import importlib
 
 from configmodel import Config
 

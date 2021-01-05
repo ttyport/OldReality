@@ -1,7 +1,7 @@
 import pygame
 import random
 
-from configmodel import Config
+from oldreality.configmodel import Config
 
 configs = [
     Config('4k', 1600, 1400),

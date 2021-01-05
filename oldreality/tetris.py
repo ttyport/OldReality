@@ -1,7 +1,7 @@
 import pygame
 import random
 
-from configmodel import Config
+from oldreality.configmodel import Config
 
 configs = [
     Config('4k', 1600, 1400),
@@ -368,7 +368,7 @@ def main():
                     paused = not paused
 
                 if event.key == pygame.K_ESCAPE:
-                    import main
+                    from oldreality import main
                     main.main()
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
