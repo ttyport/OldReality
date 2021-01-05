@@ -307,7 +307,7 @@ def main():
 
     key_left_pressed_time = 0
     key_right_pressed_time = 0
-    pressed_time_for_move = 12 * k
+    pressed_time_for_move = 24 // k
 
     fall_speed_coefficient = 1
     for c in configs:
