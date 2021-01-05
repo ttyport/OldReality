@@ -5,7 +5,7 @@ import json
 from configmodel import Config
 
 configs = [
-    Config('4k', 1600, 1400),
+    Config('4k', 1600, 1400, 4),
     Config('fullhd', 800, 700)
 ]
 pygame.font.init()
@@ -309,9 +309,14 @@ def main():
     key_right_pressed_time = 0
     pressed_time_for_move = 12 * k
 
+    fall_speed_coefficient = 1
+    for c in configs:
+        if resolution == c.resolution_name:
+            fall_speed_coefficient = c.fall_speed_coefficient_in_tetris
+
     falls_number = 0
     falls_to_stage_up = 6
-    fall_speed_stages = [i / 100 for i in range(14, 3, -2)]
+    fall_speed_stages = [i / 70 * fall_speed_coefficient for i in range(14, 3, -2)]
 
     def get_fall_speed_current_stage():
         return min(falls_number // falls_to_stage_up, len(fall_speed_stages) - 1)
