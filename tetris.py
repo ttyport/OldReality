@@ -313,8 +313,14 @@ def main():
     key_right_pressed_time = 0
     pressed_time_for_move = 12 * k
 
-    fall_speed = 0.14
-    print(fall_speed)
+    falls_number = 0
+    falls_to_stage_up = 6
+    fall_speed_stages = [i / 100 for i in range(14, 3, -2)]
+    print(fall_speed_stages)
+    def get_fall_speed_current_stage(): 
+        return min(falls_number // falls_to_stage_up, len(fall_speed_stages) - 1)
+    def get_fall_speed(): 
+        return fall_speed_stages[get_fall_speed_current_stage()]
 
     is_blocked_key_down = False
 
@@ -324,7 +330,7 @@ def main():
             fall_time += clock.get_rawtime()
 
             # PIECE FALLING CODE
-            if fall_time / 1000 >= fall_speed:
+            if fall_time / 1000 >= get_fall_speed():
                 fall_time = 0
                 current_piece.y += 1
                 if not (valid_space(current_piece, grid)) and current_piece.y > 0:
@@ -421,7 +427,13 @@ def main():
             # call four times to check for multiple clear rows
             clear_rows(grid, locked_positions)
 
-            fall_speed -= 0.0005
+            # fall_speed -= 0.005
+            falls_number += 1
+            # TODO: DELETE
+            print(f'falls_number = {falls_number}')
+            print(f'fall_speed_current_stage = {get_fall_speed_current_stage()}')
+            print(f'fall_speed = {get_fall_speed()}')
+            print()
 
             if keys[pygame.K_DOWN]:
                 is_blocked_key_down = True
