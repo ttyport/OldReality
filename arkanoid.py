@@ -38,7 +38,7 @@ v_x = random.choice((-10, 10))
 v_y = 10
 v_player = 0
 
-time = True
+time = None
 
 bricks = []
 
@@ -46,9 +46,12 @@ border = None
 player = None
 ball = None
 
+score = 0
+lives = 5
+
 
 def init_objects():
-    global  border, player, ball
+    global border, player, ball
     border = pygame.Rect(top_left_x, top_left_y, play_width, play_height)
     player = pygame.Rect(screen_width / 2 - player_width / 2, screen_height - player_height - 20,
                          player_width, player_height)
@@ -83,20 +86,39 @@ def draw_player():
 
 
 def restart():
-    global v_x, v_y, time
-    ball.x, ball.y = player.center[0] - ball_size / 2, player.top - ball_size
-
-    current_time = pygame.time.get_ticks()
-
-    if current_time - time < 2100:
-        v_x, v_y = 0, 0
+    global v_x, v_y, time, lives
+    if lives <= 0:
+        run = True
+        while run:
+            window.fill((0, 0, 0))
+            draw_text_middle("You lost.", int(80 / k), (0, 255, 0), window, delta_y=-60 / k)
+            draw_text_middle("Press <enter> to restart,", int(80 / k), (0, 255, 0), window, delta_y=120 / k)
+            draw_text_middle("or <esc> to exit.", int(80 / k), (0, 255, 0), window, delta_y=180 / k)
+            pygame.display.update()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        main_menu()
+                    elif event.key == pygame.K_ESCAPE:
+                        run = False
+                        quit()
+        pygame.quit()
     else:
-        v_x, v_y = random.choice((-10, 10)), 10
-        time = None
+        ball.x, ball.y = player.center[0] - ball_size / 2, player.top - ball_size
+
+        current_time = pygame.time.get_ticks()
+
+        if current_time - time < 2100:
+            v_x, v_y = 0, 0
+        else:
+            v_x, v_y = random.choice((-10, 10)), 10
+            time = None
 
 
 def draw_ball():
-    global v_x, v_y, time
+    global v_x, v_y, time, lives
     ball.x += v_x
     ball.y += v_y
 
@@ -117,17 +139,19 @@ def draw_ball():
             v_y *= -1
 
     if ball.bottom > border.bottom + 5:
+        lives -= 1
         time = pygame.time.get_ticks()
 
 
 def draw_bricks():
-    global v_y, v_x
+    global v_y, v_x, score
     if len(bricks) > 0:
         for el in bricks:
             pygame.draw.rect(window, (0, 255, 0), el, border_radius=2)
 
         for el in bricks:
             if ball.colliderect(el):
+                score += 5
                 if abs(ball.right - el.left) < 15:
                     v_x *= -1
                 elif abs(ball.left - el.right) < 15:
@@ -159,8 +183,9 @@ def draw_bricks():
 
 def main():
     init_objects()
-    global v_player, v_y, v_x
+    global v_player, v_y, v_x, lives
     init_bricks()
+    paused = False
     running = True
     while running:
         window.fill((0, 0, 0))
@@ -181,19 +206,43 @@ def main():
                 if event.key == pygame.K_ESCAPE:
                     import main
                     main.main()
-        draw_player()
-        draw_ball()
-        draw_bricks()
-        if time:
-            restart()
+                if event.key == pygame.K_SPACE:
+                    paused = not paused
+        if not paused:
+            draw_player()
+            draw_ball()
+            draw_bricks()
+            if time:
+                restart()
 
-        pygame.draw.rect(window, (0, 255, 0), border, 5)
-        pygame.draw.rect(window, (0, 255, 0), player, border_radius=5)
-        pygame.draw.rect(window, (0, 255, 0), ball, border_radius=int(ball_size / 2))
-        draw_text_middle("Arkanoid", int(100 / k), (0, 255, 0), window, delta_y=-450 / k)
-        pygame.display.update()
-        clock.tick(int(60 / k))
+            pygame.draw.rect(window, (0, 255, 0), border, 5)
+            pygame.draw.rect(window, (0, 255, 0), player, border_radius=5)
+            pygame.draw.rect(window, (0, 255, 0), ball, border_radius=int(ball_size / 2))
+            draw_text_middle("Arkanoid", int(100 / k), (0, 255, 0), window, delta_y=-450 / k)
+            draw_text_middle(f"Score: {score}", int(100 / k), (0, 255, 0), window, delta_y=-450 / k,
+                             delta_x= -screen_width / 3)
+            draw_text_middle(f"Lives: {lives}", int(100 / k), (0, 255, 0), window, delta_y=-450 / k,
+                             delta_x=screen_width / 3)
+            pygame.display.update()
+            clock.tick(int(60 / k))
+        else:
+            window.fill((0, 0, 0))
+            draw_text_middle('Paused', int(120 / k), (0, 255, 0), window)
+            pygame.display.update()
+            paused = check_pause(paused)
+            continue
     pygame.quit()
+
+
+def check_pause(paused):
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.display.quit()
+            quit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                paused = not paused
+    return paused
 
 
 def main_menu():
