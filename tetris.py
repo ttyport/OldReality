@@ -27,14 +27,10 @@ try:
 except Exception as e:
     print(e)
 
-<<<<<<< HEAD
-
 with open(f"resources/langs/tetris_{lang}.json") as text:
     data = json.load(text)
-    print(data)
 
-=======
->>>>>>> 66243df5a4a3055e5619f7105014bf858a7e64ea
+
 k = 1600 / screen_width
 
 fps = 60 / k
@@ -42,7 +38,8 @@ play_width = 600 / k
 play_height = 1200 / k
 block_size = 60 / k
 
-fps = 30 * k
+fps = 60 / k
+
 
 top_left_x = (screen_width - play_width) // 2
 top_left_y = screen_height - play_height
@@ -316,13 +313,10 @@ def main():
     key_right_pressed_time = 0
     pressed_time_for_move = 12 * k
 
-<<<<<<< HEAD
-    fall_speed = 0.07 if int(k) == 2 else 0.14
-=======
     fall_speed = 0.14
+    print(fall_speed)
 
     is_blocked_key_down = False
->>>>>>> 66243df5a4a3055e5619f7105014bf858a7e64ea
 
     while run:
         if not paused:
@@ -446,15 +440,9 @@ def main():
         clock.tick(fps)
 
     window.fill((0, 0, 0))
-<<<<<<< HEAD
-    draw_text_middle(data["first"], int(80 / k), (0, 255, 0), window, delta_y=-30)
-    draw_text_middle(data["second"], int(80 / k), (0, 255, 0), window, delta_y=60)
-    draw_text_middle(data["third"], int(80 / k), (0, 255, 0), window, delta_y=90)
-=======
     draw_text_middle("You Lost.", int(80 / k), (0, 255, 0), window, delta_y=-30)
     draw_text_middle("Press enter to restart,", int(80 / k), (0, 255, 0), window, delta_y=60)
     draw_text_middle("or esc to exit.", int(80 / k), (0, 255, 0), window, delta_y=90)
->>>>>>> 66243df5a4a3055e5619f7105014bf858a7e64ea
     pygame.display.update()
     run = True
     while run:
