@@ -5,8 +5,8 @@ import json
 from configmodel import Config
 
 configs = [
-    Config('4k', 1600, 1400, 4),
-    Config('fullhd', 800, 700)
+    Config('4k', 1600, 1560, 4),
+    Config('fullhd', 800, 770)
 ]
 pygame.font.init()
 
@@ -239,7 +239,7 @@ def draw_grid(surface, row, col):
                              (sx + j * block_size, sy + play_height))  # Вертикальные линии
 
 
-def clear_rows(grid, locked):
+def clear_rows(grid, locked) -> int:
     inc = 0
     for i in range(len(grid) - 1, -1, -1):
         row = grid[i]
@@ -258,6 +258,8 @@ def clear_rows(grid, locked):
                 newKey = (x, y + inc)
                 locked[newKey] = locked.pop(key)
         pygame.mixer.Sound.play(clear_rows_sound)
+
+    return inc * 10
 
 
 def draw_next_shape(shape, surface):
@@ -281,7 +283,7 @@ def draw_next_shape(shape, surface):
 
 
 show_speed_up_title = False
-def draw_window(surface, speed_up_message_time=0, is_speed_up=False):
+def draw_window(surface, speed_up_message_time=0, is_speed_up=False, score=0):
     global show_speed_up_title
     surface.fill((0, 0, 0))
     # Tetris Title
@@ -297,6 +299,9 @@ def draw_window(surface, speed_up_message_time=0, is_speed_up=False):
         if show_speed_up_title:
             label = font.render(data["speed_up"].upper(), True, (255, 0, 0))
             surface.blit(label, (top_left_x + play_width / 2 - (label.get_width() / 2), block_size))
+
+    score_text = font.render(f'{data["score"].upper()}: {score}', True, (255, 200, 100))
+    surface.blit(score_text, (top_left_x + play_width / 2 - (score_text.get_width() / 2), block_size * 2 + 30//k))
 
     for i in range(len(grid)):
         for j in range(len(grid[i])):
@@ -335,6 +340,8 @@ def main():
     falls_number = 0
     falls_to_stage_up = 6
     fall_speed_stages = [i / 70 * fall_speed_coefficient for i in range(14, 3, -2)]
+
+    score = 0
 
     def get_fall_speed_current_stage():
         return min(falls_number // falls_to_stage_up, len(fall_speed_stages) - 1)
@@ -449,7 +456,7 @@ def main():
             change_piece = False
 
             # call four times to check for multiple clear rows
-            clear_rows(grid, locked_positions)
+            score += clear_rows(grid, locked_positions)
 
             # fall_speed -= 0.005
             falls_number += 1
@@ -460,7 +467,7 @@ def main():
         if not keys[pygame.K_DOWN]:
             is_blocked_key_down = False
 
-        draw_window(window, speed_up_message_time, is_speed_up)
+        draw_window(window, speed_up_message_time, is_speed_up, score)
         if is_speed_up:
             speed_up_message_time += 1
         draw_next_shape(next_piece, window)

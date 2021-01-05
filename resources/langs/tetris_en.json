@@ -6,5 +6,6 @@
   "first": "You Lost.",
   "second": "Press <enter> to restart,",
   "third": "or <esc> to exit.",
-  "speed_up": "speed up!"
+  "speed_up": "speed up!",
+  "score": "score"
 }
