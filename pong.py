@@ -1,5 +1,6 @@
 import pygame
 import random
+import json
 
 from configmodel import Config
 
@@ -16,13 +17,21 @@ clock = pygame.time.Clock()
 screen_width = 1600
 screen_height = 1400
 
-with open("config.txt") as conf:
-    conf = conf.read().split("\n")
-    resolution = conf[0].split("=")[1].lower()
-    for config in configs:
-        if resolution == config.resolution_name:
-            screen_width = config.screen_width
-            screen_height = config.screen_height
+try:
+    with open("config.txt") as conf:
+        conf = conf.read().split("\n")
+        resolution = conf[0].split("=")[1].lower()
+        lang = conf[1].split("=")[1].lower()
+        for config in configs:
+            if resolution == config.resolution_name:
+                screen_width = config.screen_width
+                screen_height = config.screen_height
+except Exception as e:
+    print(e)
+
+
+with open(f"resources/langs/pong_{lang}.json") as text:
+    data = json.load(text)
 
 k = 1600 / screen_width
 
@@ -177,7 +186,7 @@ def main():
             pygame.draw.rect(window, green, border, 5)
         else:
             window.fill((0, 0, 0))
-            draw_text_middle('Paused', int(60 / k), (0, 255, 0), window)
+            draw_text_middle(data["paused"], int(60 / k), (0, 255, 0), window)
             pygame.display.update()
             paused = check_pause(paused)
             continue
@@ -185,7 +194,7 @@ def main():
         if time:
             restart()
 
-        draw_text_middle("Pong", int(100 / k), (0, 255, 0), window, delta_y=-550 / k)
+        draw_text_middle(data["title"], int(100 / k), (0, 255, 0), window, delta_y=-550 / k)
         draw_text_middle(f"{player_score}:{opponent_score}", int(50 / k), (0, 255, 0), window, delta_y=-550 / k)
         pygame.display.flip()
         clock.tick(int(60 / k))
@@ -207,7 +216,7 @@ def main_menu():
     while run:
         window.fill((0, 0, 0))
 
-        draw_text_middle('Press any key to begin.', int(120 / k), (0, 255, 0), window)
+        draw_text_middle(data["start_text"], int(120 / k), (0, 255, 0), window)
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

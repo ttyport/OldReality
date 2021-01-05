@@ -2,6 +2,7 @@ import pygame
 import importlib
 import sys
 import os
+import json
 
 from configmodel import Config
 
@@ -19,11 +20,15 @@ screen_height = 1400
 with open("config.txt") as conf:
     conf = conf.read().split("\n")
     resolution = conf[0].split("=")[1].lower()
+    lang = conf[1].split("=")[1].lower()
 
     for config in configs:
         if resolution == config.resolution_name:
             screen_width = config.screen_width
             screen_height = config.screen_height
+
+with open(f"resources/langs/main_{lang}.json") as text:
+    data = json.load(text)
 
 
 k = 1600 / screen_width
@@ -72,6 +77,7 @@ def update_cursor():
 
 def draw_list():
     for i, el in enumerate(games_list):
+        el = data[el]
         draw_text_middle(el, int(100 / k), (0, 255, 0), window, delta_x=400 / k,
                          delta_y=i * 100 / k - 200 / k, left=True)
 
@@ -99,6 +105,7 @@ def main():
                     else:
                         x_coord = len(games_list) - 1
                 elif event.key == pygame.K_RETURN:
+                    pygame.display.set_caption(data[games_list[x_coord]])
                     game = importlib.import_module(games_list[x_coord])
                     game.main_menu()
         update_cursor()
@@ -108,6 +115,6 @@ def main():
 
 
 window = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption('Main game menu')
+pygame.display.set_caption(data["title"])
 
 main()
