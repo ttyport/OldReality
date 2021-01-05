@@ -312,7 +312,6 @@ def main():
     falls_number = 0
     falls_to_stage_up = 6
     fall_speed_stages = [i / 100 for i in range(14, 3, -2)]
-    print(fall_speed_stages)
 
     def get_fall_speed_current_stage():
         return min(falls_number // falls_to_stage_up, len(fall_speed_stages) - 1)
@@ -358,15 +357,6 @@ def main():
                 quit()
 
             if event.type == pygame.KEYDOWN:
-                # if event.key == pygame.K_LEFT:
-                #     current_piece.x -= 1
-                #     if not valid_space(current_piece, grid):
-                #         current_piece.x += 1
-
-                # if event.key == pygame.K_RIGHT:
-                #     current_piece.x += 1
-                #     if not valid_space(current_piece, grid):
-                #         current_piece.x -= 1
                 if event.key == pygame.K_LEFT:
                     moveShapeLeft()
                 elif event.key == pygame.K_RIGHT:
@@ -427,11 +417,6 @@ def main():
 
             # fall_speed -= 0.005
             falls_number += 1
-            # TODO: DELETE
-            print(f'falls_number = {falls_number}')
-            print(f'fall_speed_current_stage = {get_fall_speed_current_stage()}')
-            print(f'fall_speed = {get_fall_speed()}')
-            print()
 
             if keys[pygame.K_DOWN]:
                 is_blocked_key_down = True
