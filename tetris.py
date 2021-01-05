@@ -32,7 +32,7 @@ with open(f"resources/langs/tetris_{lang}.json") as text:
 
 k = 1600 / screen_width
 
-fps = 60 / k
+fps = 60 // k
 play_width = 600 / k
 play_height = 1200 / k
 block_size = 60 / k
@@ -273,13 +273,23 @@ def draw_next_shape(shape, surface):
     surface.blit(label, (sx + 20 / k, sy - block_size))
 
 
-def draw_window(surface):
+show_speed_up_title = False
+def draw_window(surface, speed_up_message_time=0, is_speed_up=False):
+    global show_speed_up_title
     surface.fill((0, 0, 0))
     # Tetris Title
     font = pygame.font.Font('resources/fonts/font.ttf', int(120 / k))
-    label = font.render(data["title"].upper(), True, (0, 255, 0))
 
-    surface.blit(label, (top_left_x + play_width / 2 - (label.get_width() / 2), block_size))
+    if speed_up_message_time % fps == 0:
+        show_speed_up_title = not show_speed_up_title
+
+    if not is_speed_up:
+        label = font.render(data["title"].upper(), True, (0, 255, 0))
+        surface.blit(label, (top_left_x + play_width / 2 - (label.get_width() / 2), block_size))
+    else:
+        if show_speed_up_title:
+            label = font.render(data["speed_up"].upper(), True, (255, 0, 0))
+            surface.blit(label, (top_left_x + play_width / 2 - (label.get_width() / 2), block_size))
 
     for i in range(len(grid)):
         for j in range(len(grid[i])):
@@ -303,6 +313,7 @@ def main():
     next_piece = get_shape()
     clock = pygame.time.Clock()
     fall_time = 0
+    speed_up_message_time = 0
     paused = False
 
     key_left_pressed_time = 0
@@ -326,13 +337,25 @@ def main():
 
     is_blocked_key_down = False
 
+    is_speed_up = False
+    current_fall_speed = get_fall_speed()
     while run:
         if not paused:
+            new_fall_speed = get_fall_speed()
+            # If fall speed is changed
+            if new_fall_speed != current_fall_speed:
+                current_fall_speed = new_fall_speed
+                is_speed_up = True
+            else:
+                if speed_up_message_time >= fps * 6:
+                    is_speed_up = False
+                    speed_up_message_time = 0
+
             grid = create_grid(locked_positions)
             fall_time += clock.get_rawtime()
 
             # PIECE FALLING CODE
-            if fall_time / 1000 >= get_fall_speed():
+            if fall_time / 1000 >= current_fall_speed:
                 fall_time = 0
                 current_piece.y += 1
                 if not (valid_space(current_piece, grid)) and current_piece.y > 0:
@@ -429,7 +452,9 @@ def main():
         if not keys[pygame.K_DOWN]:
             is_blocked_key_down = False
 
-        draw_window(window)
+        draw_window(window, speed_up_message_time, is_speed_up)
+        if is_speed_up:
+            speed_up_message_time += 1
         draw_next_shape(next_piece, window)
         pygame.display.update()
 
