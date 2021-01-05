@@ -15,6 +15,12 @@ pygame.font.init()
 screen_width = 800
 screen_height = 700
 
+# Sound
+
+pygame.mixer.init()
+clear_rows_sound = pygame.mixer.Sound("resources/sounds/beep.ogg")
+speed_up_sound = pygame.mixer.Sound("resources/sounds/score.ogg")
+
 try:
     with open("config.txt") as conf:
         conf = conf.read().split("\n")
@@ -251,6 +257,7 @@ def clear_rows(grid, locked):
             if y < ind:
                 newKey = (x, y + inc)
                 locked[newKey] = locked.pop(key)
+        pygame.mixer.Sound.play(clear_rows_sound)
 
 
 def draw_next_shape(shape, surface):
@@ -346,6 +353,7 @@ def main():
             if new_fall_speed != current_fall_speed:
                 current_fall_speed = new_fall_speed
                 is_speed_up = True
+                pygame.mixer.Sound.play(speed_up_sound)
             else:
                 if speed_up_message_time >= fps * 6:
                     is_speed_up = False
