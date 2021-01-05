@@ -431,9 +431,9 @@ def main():
         clock.tick(fps)
 
     window.fill((0, 0, 0))
-    draw_text_middle("You Lost.", int(40 / k), (0, 255, 0), window, delta_y=-30)
-    draw_text_middle("Press enter to restart,", int(40 / k), (0, 255, 0), window, delta_y=60)
-    draw_text_middle("or esc to exit.", int(40 / k), (0, 255, 0), window, delta_y=90)
+    draw_text_middle("You Lost.", int(80 / k), (0, 255, 0), window, delta_y=-30)
+    draw_text_middle("Press enter to restart,", int(80 / k), (0, 255, 0), window, delta_y=60)
+    draw_text_middle("or esc to exit.", int(80 / k), (0, 255, 0), window, delta_y=90)
     pygame.display.update()
     run = True
     while run:
