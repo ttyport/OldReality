@@ -67,7 +67,7 @@ def draw_list():
                          delta_y=i * 100 / k - 200 / k, left=True)
 
 
-def main():
+def main_menu():
     global x_coord
     running = True
     while running:
@@ -141,4 +141,4 @@ x_coord = 0
 window = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption(data["title"])
 
-main()
+main_menu()

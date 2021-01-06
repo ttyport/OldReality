@@ -106,10 +106,7 @@ def main():
                 elif event.key == pygame.K_RETURN:
                     pygame.display.set_caption(data[games_list[x_coord]])
                     game = importlib.import_module(games_list[x_coord])
-                    if game != "Settings":
-                        game.main_menu()
-                    else:
-                        game.main()
+                    game.main_menu()
         update_cursor()
         draw_list()
         pygame.display.update()
