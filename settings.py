@@ -124,8 +124,6 @@ screen_height = 1400
 
 reconfig()
 
-print(screen_width)
-
 k = 1600 / screen_width
 
 
