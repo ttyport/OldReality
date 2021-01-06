@@ -94,16 +94,15 @@ def main():
                     coord = settings[x_coord].index(config[x_coord]) - 1
                     coord = coord if coord >= 0 else 1
                     config[x_coord] = settings[x_coord][coord]
-                    write_config()
 
                 elif event.key == pygame.K_RIGHT:
                     coord = settings[x_coord].index(config[x_coord]) + 1
                     coord = coord if coord <= 1 else 0
                     write_config()
                     config[x_coord] = settings[x_coord][coord]
-                    write_config()
 
                 elif event.key == pygame.K_RETURN:
+                    write_config()
                     reconfig()
 
                 elif event.key == pygame.K_ESCAPE:
