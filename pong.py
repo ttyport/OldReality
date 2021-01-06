@@ -17,20 +17,16 @@ clock = pygame.time.Clock()
 screen_width = 1600
 screen_height = 1400
 
-try:
-    with open("config.txt") as conf:
-        conf = conf.read().split("\n")
-        resolution = conf[0].split("=")[1].lower()
-        lang = conf[1].split("=")[1].lower()
-        for config in configs:
-            if resolution == config.resolution_name:
-                screen_width = config.screen_width
-                screen_height = config.screen_height
-except Exception as e:
-    print(e)
+with open("config.txt") as conf:
+    conf = conf.read().split("\n")
+    resolution = conf[0].split("=")[1].lower()
+    lang = conf[1].split("=")[1].lower()
+    for config in configs:
+        if resolution == config.resolution_name:
+            screen_width = config.screen_width
+            screen_height = config.screen_height
 
-
-with open(f"resources/langs/pong_{lang}.json") as text:
+with open(f"resources/langs/pong/{lang}.json") as text:
     data = json.load(text)
 
 k = 1600 / screen_width
@@ -63,7 +59,6 @@ v_opponent = 7
 
 # Время
 time = True
-
 
 # Счет
 player_score = 0
@@ -229,6 +224,6 @@ def main_menu():
 
 # Объявление окна
 window = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption('Pong')
+pygame.display.set_caption(data["title"])
 
-main_menu() # Запуск игры
+main_menu()  # Запуск игры

@@ -27,12 +27,11 @@ with open("config.txt") as conf:
             screen_width = config.screen_width
             screen_height = config.screen_height
 
-with open(f"resources/langs/main_{lang}.json") as text:
+with open(f"resources/langs/main/{lang}.json") as text:
     data = json.load(text)
 
 
 k = 1600 / screen_width
-
 
 
 games_list = ["tetris", "pong", "arkanoid"]
@@ -106,6 +105,7 @@ def main():
                         x_coord = len(games_list) - 1
                 elif event.key == pygame.K_RETURN:
                     pygame.display.set_caption(data[games_list[x_coord]])
+                    print(data[games_list[x_coord]])
                     game = importlib.import_module(games_list[x_coord])
                     game.main_menu()
         update_cursor()

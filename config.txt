@@ -1,2 +1,2 @@
 Resolution=fullhd
-Lang=ru
+Lang=en

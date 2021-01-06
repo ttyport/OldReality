@@ -1,6 +1,7 @@
 import pygame
 import random
 import importlib
+import json
 
 from configmodel import Config
 
@@ -18,11 +19,14 @@ screen_height = 1400
 with open("config.txt") as conf:
     conf = conf.read().split("\n")
     resolution = conf[0].split("=")[1].lower()
-
+    lang = conf[1].split("=")[1].lower()
     for config in configs:
         if resolution == config.resolution_name:
             screen_width = config.screen_width
             screen_height = config.screen_height
+
+with open(f"resources/langs/arkanoid/{lang}.json") as text:
+    data = json.load(text)
 
 k = 1610 / screen_width
 
@@ -91,9 +95,9 @@ def restart():
         run = True
         while run:
             window.fill((0, 0, 0))
-            draw_text_middle("You lost.", int(80 / k), (0, 255, 0), window, delta_y=-60 / k)
-            draw_text_middle("Press <enter> to restart,", int(80 / k), (0, 255, 0), window, delta_y=120 / k)
-            draw_text_middle("or <esc> to exit.", int(80 / k), (0, 255, 0), window, delta_y=180 / k)
+            draw_text_middle(data["first_lose"], int(80 / k), (0, 255, 0), window, delta_y=-60 / k)
+            draw_text_middle(data["second"], int(80 / k), (0, 255, 0), window, delta_y=120 / k)
+            draw_text_middle(data["third"], int(80 / k), (0, 255, 0), window, delta_y=180 / k)
             pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -165,9 +169,9 @@ def draw_bricks():
         run = True
         while run:
             window.fill((0, 0, 0))
-            draw_text_middle("You won.", int(80 / k), (0, 255, 0), window, delta_y=-60 / k)
-            draw_text_middle("Press <enter> to restart,", int(80 / k), (0, 255, 0), window, delta_y=120 / k)
-            draw_text_middle("or <esc> to exit.", int(80 / k), (0, 255, 0), window, delta_y=180 / k)
+            draw_text_middle(data["first_won"], int(80 / k), (0, 255, 0), window, delta_y=-60 / k)
+            draw_text_middle(data["second"], int(80 / k), (0, 255, 0), window, delta_y=120 / k)
+            draw_text_middle(data["third"], int(80 / k), (0, 255, 0), window, delta_y=180 / k)
             pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -218,16 +222,16 @@ def main():
             pygame.draw.rect(window, (0, 255, 0), border, 5)
             pygame.draw.rect(window, (0, 255, 0), player, border_radius=5)
             pygame.draw.rect(window, (0, 255, 0), ball, border_radius=int(ball_size / 2))
-            draw_text_middle("Arkanoid", int(100 / k), (0, 255, 0), window, delta_y=-450 / k)
-            draw_text_middle(f"Score: {score}", int(100 / k), (0, 255, 0), window, delta_y=-450 / k,
-                             delta_x= -screen_width / 3)
-            draw_text_middle(f"Lives: {lives}", int(100 / k), (0, 255, 0), window, delta_y=-450 / k,
+            draw_text_middle(data["title"], int(100 / k), (0, 255, 0), window, delta_y=-450 / k)
+            draw_text_middle(f"{data['score']}: {score}", int(100 / k), (0, 255, 0), window, delta_y=-450 / k,
+                             delta_x=-screen_width / 3)
+            draw_text_middle(f"{data['lives']}: {lives}", int(100 / k), (0, 255, 0), window, delta_y=-450 / k,
                              delta_x=screen_width / 3)
             pygame.display.update()
             clock.tick(int(60 / k))
         else:
             window.fill((0, 0, 0))
-            draw_text_middle('Paused', int(120 / k), (0, 255, 0), window)
+            draw_text_middle(data["pause"], int(120 / k), (0, 255, 0), window)
             pygame.display.update()
             paused = check_pause(paused)
             continue
@@ -250,7 +254,7 @@ def main_menu():
     while run:
         window.fill((0, 0, 0))
 
-        draw_text_middle('Press any key to begin.', int(120 / k), (0, 255, 0), window)
+        draw_text_middle(data["start_text"], int(120 / k), (0, 255, 0), window)
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -262,6 +266,6 @@ def main_menu():
 
 
 window = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption('Arkanoid')
+pygame.display.set_caption(data["title"])
 
 main_menu()

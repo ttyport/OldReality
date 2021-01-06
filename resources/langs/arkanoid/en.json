@@ -1,0 +1,10 @@
+{
+  "title": "Arkanoid",
+  "start_text": "Press any key to begin.",
+  "pause": "Paused",
+  "score": "score",
+  "lives": "lives",
+  "first": "You Lost.",
+  "second": "Press <enter> to restart,",
+  "third": "or <esc> to exit."
+}

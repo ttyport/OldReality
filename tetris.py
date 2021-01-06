@@ -15,19 +15,17 @@ pygame.font.init()
 screen_width = 800
 screen_height = 700
 
-try:
-    with open("config.txt") as conf:
-        conf = conf.read().split("\n")
-        resolution = conf[0].split("=")[1].lower()
-        lang = conf[1].split("=")[1].lower()
-        for config in configs:
-            if resolution == config.resolution_name:
-                screen_width = config.screen_width
-                screen_height = config.screen_height
-except Exception as e:
-    print(e)
 
-with open(f"resources/langs/tetris_{lang}.json") as text:
+with open("config.txt") as conf:
+    conf = conf.read().split("\n")
+    resolution = conf[0].split("=")[1].lower()
+    lang = conf[1].split("=")[1].lower()
+    for config in configs:
+        if resolution == config.resolution_name:
+            screen_width = config.screen_width
+            screen_height = config.screen_height
+
+with open(f"resources/langs/tetris/{lang}.json") as text:
     data = json.load(text)
 
 
@@ -440,9 +438,9 @@ def main():
         clock.tick(fps)
 
     window.fill((0, 0, 0))
-    draw_text_middle("You Lost.", int(80 / k), (0, 255, 0), window, delta_y=-30)
-    draw_text_middle("Press enter to restart,", int(80 / k), (0, 255, 0), window, delta_y=60)
-    draw_text_middle("or esc to exit.", int(80 / k), (0, 255, 0), window, delta_y=90)
+    draw_text_middle(data["first"], int(80 / k), (0, 255, 0), window, delta_y=-30)
+    draw_text_middle(data["second"], int(80 / k), (0, 255, 0), window, delta_y=60)
+    draw_text_middle(data["third"], int(80 / k), (0, 255, 0), window, delta_y=90)
     pygame.display.update()
     run = True
     while run:
