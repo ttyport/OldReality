@@ -4,7 +4,8 @@
   "pause": "Paused",
   "score": "score",
   "lives": "lives",
-  "first": "You Lost.",
+  "first_lose": "You Lost.",
+  "first_won": "You Won.",
   "second": "Press <enter> to restart,",
   "third": "or <esc> to exit."
 }
