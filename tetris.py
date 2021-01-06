@@ -15,7 +15,7 @@ pygame.font.init()
 screen_width = 800
 screen_height = 700
 
-with open("config.txt") as conf:
+with open("config.txt", encoding="utf-8") as conf:
     conf = conf.read().split("\n")
     resolution = conf[0].split("=")[1].lower()
     lang = conf[1].split("=")[1].lower()
@@ -31,7 +31,7 @@ clear_rows_sound = pygame.mixer.Sound("resources/sounds/beep.ogg")
 speed_up_sound = pygame.mixer.Sound("resources/sounds/score.ogg")
 
 try:
-    with open("config.txt") as conf:
+    with open("config.txt", encoding="utf-8") as conf:
         conf = conf.read().split("\n")
         resolution = conf[0].split("=")[1].lower()
         lang = conf[1].split("=")[1].lower()
@@ -42,7 +42,7 @@ try:
 except Exception as e:
     print(e)
 
-with open(f"resources/langs/tetris/{lang}.json") as text:
+with open(f"resources/langs/tetris/{lang}.json", encoding="utf-8") as text:
     data = json.load(text)
 
 k = 1600 / screen_width

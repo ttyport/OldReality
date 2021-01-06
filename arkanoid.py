@@ -16,7 +16,7 @@ clock = pygame.time.Clock()
 screen_width = 1610
 screen_height = 1400
 
-with open("config.txt") as conf:
+with open("config.txt", encoding="utf-8") as conf:
     conf = conf.read().split("\n")
     resolution = conf[0].split("=")[1].lower()
     lang = conf[1].split("=")[1].lower()
@@ -25,7 +25,7 @@ with open("config.txt") as conf:
             screen_width = config.screen_width
             screen_height = config.screen_height
 
-with open(f"resources/langs/arkanoid/{lang}.json") as text:
+with open(f"resources/langs/arkanoid/{lang}.json", encoding="utf-8") as text:
     data = json.load(text)
 
 k = 1610 / screen_width
