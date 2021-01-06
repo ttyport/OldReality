@@ -10,7 +10,7 @@ def reconfig():
         Config('4K', 1600, 1400),
         Config('FullHD', 800, 700)
     ]
-    with open("config.txt") as conf:
+    with open("config.txt", encoding="utf-8") as conf:
         conf = conf.read().split("\n")
         res = conf[0].split("=")[1]
         lang = conf[1].split("=")[1]
@@ -19,7 +19,7 @@ def reconfig():
                 screen_width = _config.screen_width
                 screen_height = _config.screen_height
 
-    with open(f"resources/langs/settings/{lang}.json") as text:
+    with open(f"resources/langs/settings/{lang}.json", encoding="utf-8") as text:
         data = json.load(text)
 
     window = pygame.display.set_mode((screen_width, screen_height))
@@ -27,7 +27,7 @@ def reconfig():
 
 
 def write_config():
-    with open("config.txt", "w") as conf:
+    with open("config.txt", "w", encoding="utf-8") as conf:
         print(f"Resolution={config[1]}", file=conf)
         print(f"Lang={config[0]}", file=conf)
 
