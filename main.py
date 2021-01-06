@@ -34,7 +34,7 @@ with open(f"resources/langs/main/{lang}.json") as text:
 k = 1600 / screen_width
 
 
-games_list = ["tetris", "pong", "arkanoid"]
+games_list = ["tetris", "pong", "arkanoid", "settings"]
 image_list = []
 
 x_coord = 0
@@ -44,14 +44,13 @@ def load_image(name, colorkey=None):
     fullname = f"resources/images/{name}"
     # если файл не существует, то выходим
     if not os.path.isfile(fullname):
-        print(f"Файл с изображением '{fullname}' не найден")
         sys.exit()
     image = pygame.image.load(fullname)
     return image
 
 
-for el in games_list:
-    image_list.append(load_image(el + ".png"))
+for i, el in enumerate(games_list):
+    image_list.append(load_image(el + ".png") if i != len(games_list) - 1 else None)
 
 
 def draw_text_middle(text, size, color, surface, delta_x=0, delta_y=0, left=False):
@@ -67,17 +66,18 @@ def draw_text_middle(text, size, color, surface, delta_x=0, delta_y=0, left=Fals
 
 
 def update_cursor():
-    draw_text_middle(">", int(100 / k), (0, 255, 0), window, delta_x=int(300 / k),
+    draw_text_middle(">", int(100 / k), (0, 255, 0), window, delta_x=int(200 / k),
                      delta_y=x_coord * 100 / k - (15 if int(k) == 1 else 10))
-    window.blit(pygame.transform.scale(image_list[x_coord], (int(800 / k), int(800 / k))), (200 / k, 400 / k))
-    border = pygame.Rect(200 / k, 400 / k, 800 / k, 800 / k)
-    pygame.draw.rect(window, (0, 255, 0), border, 5)
+    if image_list[x_coord] is not None:
+        window.blit(pygame.transform.scale(image_list[x_coord], (int(800 / k), int(800 / k))), (100 / k, 400 / k))
+        border = pygame.Rect(100 / k, 400 / k, 800 / k, 800 / k)
+        pygame.draw.rect(window, (0, 255, 0), border, 5)
 
 
 def draw_list():
     for i, el in enumerate(games_list):
         el = data[el]
-        draw_text_middle(el, int(100 / k), (0, 255, 0), window, delta_x=400 / k,
+        draw_text_middle(el, int(100 / k), (0, 255, 0), window, delta_x=300 / k,
                          delta_y=i * 100 / k - 200 / k, left=True)
 
 
@@ -105,9 +105,11 @@ def main():
                         x_coord = len(games_list) - 1
                 elif event.key == pygame.K_RETURN:
                     pygame.display.set_caption(data[games_list[x_coord]])
-                    print(data[games_list[x_coord]])
                     game = importlib.import_module(games_list[x_coord])
-                    game.main_menu()
+                    if game != "Settings":
+                        game.main_menu()
+                    else:
+                        game.main()
         update_cursor()
         draw_list()
         pygame.display.update()

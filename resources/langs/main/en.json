@@ -2,5 +2,6 @@
   "tetris": "tetris",
   "pong": "pong",
   "arkanoid": "arkanoid",
+  "settings": "Settings",
   "title": "Main menu"
 }
