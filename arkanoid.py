@@ -2,7 +2,9 @@ import pygame
 import random
 import json
 
+from common.learning_controls import LearningControlsSurface, KeySurface
 from configmodel import Config
+from common.surface_combiner import Alignment, get_surfaces_into_column
 
 configs = [
     Config('4k', 1610, 1400),
@@ -27,7 +29,7 @@ with open("config.txt", encoding="utf-8") as conf:
 with open(f"resources/langs/arkanoid/{lang}.json", encoding="utf-8") as text:
     data = json.load(text)
 
-k = 1610 / screen_width
+k = 1610 // screen_width
 
 play_height = 1198 / k
 play_width = 1510 / k
@@ -122,9 +124,15 @@ def restart():
         run = True
         while run:
             window.fill((0, 0, 0))
-            draw_text_middle(data["first_lose"], int(80 / k), (0, 255, 0), window, delta_y=-60 / k)
-            draw_text_middle(data["second"], int(80 / k), (0, 255, 0), window, delta_y=120 / k)
-            draw_text_middle(data["third"], int(80 / k), (0, 255, 0), window, delta_y=180 / k)
+
+            font = pygame.font.Font('resources/fonts/font.ttf', int(80 / k))
+            game_over_texts = [font.render(data[key], True, (0, 255, 0)) for key in ("first_lose", "second", "third")]
+            game_over_texts.insert(1, pygame.Surface((100, game_over_texts[0].get_height())))
+
+            game_over_surface = get_surfaces_into_column(game_over_texts, Alignment.CENTER)
+            game_over_rect = game_over_surface.get_rect(center=(screen_width // 2, screen_height // 2))
+            window.blit(game_over_surface, game_over_rect)
+
             pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -217,9 +225,14 @@ def draw_bricks():
         run = True
         while run:
             window.fill((0, 0, 0))
-            draw_text_middle(data["first_won"], int(80 / k), (0, 255, 0), window, delta_y=-60 / k)
-            draw_text_middle(data["second"], int(80 / k), (0, 255, 0), window, delta_y=120 / k)
-            draw_text_middle(data["third"], int(80 / k), (0, 255, 0), window, delta_y=180 / k)
+
+            font = pygame.font.Font('resources/fonts/font.ttf', int(80 / k))
+            game_over_texts = [font.render(data[key], True, (0, 255, 0)) for key in ("first_won", "second", "third")]
+            game_over_texts.insert(1, pygame.Surface((100, game_over_texts[0].get_height())))
+
+            game_over_surface = get_surfaces_into_column(game_over_texts, Alignment.CENTER)
+            game_over_rect = game_over_surface.get_rect(center=(screen_width // 2, screen_height // 2))
+            window.blit(game_over_surface, game_over_rect)
 
             pygame.display.update()
             for event in pygame.event.get():
@@ -284,7 +297,9 @@ def main():
         else:
 
             window.fill((0, 0, 0))
-            draw_text_middle(data["pause"], int(120 / k), (0, 255, 0), window)
+            main_menu_surface = get_instruction(data["paused"])
+            main_menu_rect = main_menu_surface.get_rect(center=(screen_width // 2, screen_height // 2))
+            window.blit(main_menu_surface, main_menu_rect)
             pygame.display.update()
             paused = check_pause(paused)
             continue
@@ -313,6 +328,30 @@ def check_pause(paused):
             if event.key == pygame.K_SPACE:
                 paused = not paused
     return paused
+
+
+def get_instruction(title: str, padding=60 // k) -> pygame.Surface:
+    title_font = pygame.font.Font("resources/fonts/font.ttf", 120 // k)
+    key_text_font = pygame.font.Font("resources/fonts/font.ttf", 60 // k)
+
+    key_paddings = (30//k, 20//k)
+    title_indent = 20//k
+
+    arrow_left_text = KeySurface(key_text_font.render("←", True, (0, 255, 0)), (0, 255, 0), (0, 0, 0), key_paddings)
+    arrow_right_text = KeySurface(key_text_font.render("→", True, (0, 255, 0)), (0, 255, 0), (0, 0, 0), key_paddings)
+    space_text = KeySurface(key_text_font.render(data["space"].upper(), True, (0, 255, 0)), (0, 255, 0), (0, 0, 0),
+                            key_paddings)
+    escape_text = KeySurface(key_text_font.render("ESC", True, (0, 255, 0)), (0, 255, 0), (0, 0, 0), key_paddings)
+
+    instructions = [
+        {"keys": [arrow_left_text, arrow_right_text], "text": data["instructions"]["move_player"]},
+        {"keys": [space_text], "text": data["instructions"]["pause"]},
+        {"keys": [escape_text], "text": data["instructions"]["quit"]}
+    ]
+
+    main_menu_surface = LearningControlsSurface(title, (0, 255, 0), instructions, padding,
+                                                title_indent, key_text_font, title_font)
+    return main_menu_surface
 
 
 def main_menu(launch=False):

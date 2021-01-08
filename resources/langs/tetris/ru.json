@@ -7,5 +7,13 @@
   "second": "Нажмите <enter> чтобы начать заново,",
   "third": "или <esc> чтобы выйти.",
   "speed_up": "ускорение!",
-  "score": "счёт"
+  "score": "счёт",
+  "space": "пробел",
+  "instructions": {
+    "move_piece": "Переместить фигуру",
+    "rotate_piece": "Повернуть фигуру",
+    "accelerate_fall_piece": "Ускорить падение фигуры",
+    "pause": "Пауза",
+    "quit": "Выход"
+  }
 }
