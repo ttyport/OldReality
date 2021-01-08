@@ -392,7 +392,9 @@ def main():
                     change_piece = True
         else:
             window.fill((0, 0, 0))
-            draw_text_middle(data['paused'], int(120 / k), (0, 255, 0), window)
+            main_menu_surface = get_instruction(data["paused"])
+            main_menu_rect = main_menu_surface.get_rect(center=(screen_width // 2, screen_height // 2))
+            window.blit(main_menu_surface, main_menu_rect)
             pygame.display.update()
             paused = check_pause(paused)
             continue
