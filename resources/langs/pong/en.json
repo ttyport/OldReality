@@ -1,5 +1,11 @@
 {
   "paused": "Paused",
   "title": "Pong",
-  "start_text": "Press any key to begin."
+  "space": "space",
+  "start_text": "Press any key to begin.",
+  "instructions": {
+    "move_player": "Move player",
+    "pause": "Pause",
+    "quit": "Quit"
+  }
 }
