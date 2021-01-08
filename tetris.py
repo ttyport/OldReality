@@ -45,7 +45,7 @@ except Exception as e:
 with open(f"resources/langs/tetris/{lang}.json", encoding="utf-8") as text:
     data = json.load(text)
 
-k = 1600 / screen_width
+k = 1600 // screen_width
 
 fps = 60 // k
 play_width = 600 / k
@@ -522,19 +522,124 @@ def check_pause(paused):
     return paused
 
 
+def get_key_surface(text_surface,
+                    color=(0, 255, 0),
+                    bg_color=(0, 0, 0),
+                    paddings_x=30//k,
+                    paddings_y=20//k,
+                    border=2,
+                    border_radius=2) -> pygame.Surface:
+    width = paddings_x*2 + text_surface.get_width()
+    height = paddings_y*2 + text_surface.get_height()
+
+    key_surf = pygame.Surface((width, height))
+    key_surf.fill(bg_color)
+    pygame.draw.rect(key_surf, color, key_surf.get_rect(),
+                     width=border, border_radius=border_radius)
+
+    text_rect = text_surface.get_rect(center=(width//2, height//2))
+    key_surf.blit(text_surface, text_rect)
+
+    return key_surf
+
+
+def get_instruction_surfaces(instructions, font: pygame.font.Font, padding=20//k):
+    instruction_surfaces = []
+    for el in instructions:
+        keys, instruction_text = el["keys"], el["text"]
+        text_surface = font.render(instruction_text, True, (0, 255, 0))
+
+        keys_width = sum(key.get_width() for key in keys)
+        width = keys_width + padding + text_surface.get_width()
+        height = max(key.get_height() for key in keys)
+
+        instruction_surface = pygame.Surface((width, height))
+        x = 0
+        for key in keys:
+            key_rect = key.get_rect(left=x)
+            instruction_surface.blit(key, key_rect)
+            x += key_rect.width
+
+        x += padding
+
+        text_rect = text_surface.get_rect(left=x, centery=height // 2)
+        instruction_surface.blit(text_surface, text_rect)
+
+        instruction_surfaces.append(instruction_surface)
+    return instruction_surfaces
+
+
+def get_instruction_surface(instruction_surfaces, padding=40//k) \
+        -> pygame.Surface:
+    width = max(surf.get_width() for surf in instruction_surfaces)
+    height = sum(surf.get_height() for surf in instruction_surfaces) \
+             + (len(instruction_surfaces) - 1) * padding
+
+    instruction_surface = pygame.Surface((width, height))
+
+    y = 0
+    for instruction in instruction_surfaces:
+        instruction_surface.blit(instruction, (0, y))
+        y += instruction.get_height() + padding
+
+    return instruction_surface
+
+
+def get_instruction(title: str, padding=30) -> pygame.Surface:
+    title_font = pygame.font.Font("resources/fonts/font.ttf", 120 // k)
+    title_text = title_font.render(title, True, (0, 255, 0))
+
+    key_text_font = pygame.font.Font("resources/fonts/font.ttf", 60 // k)
+
+    arrow_left_text = get_key_surface(key_text_font.render("←", True, (0, 255, 0)))
+    arrow_right_text = get_key_surface(key_text_font.render("→", True, (0, 255, 0)))
+    arrow_up_text = get_key_surface(key_text_font.render("↑", True, (0, 255, 0)))
+    arrow_down_text = get_key_surface(key_text_font.render("↓", True, (0, 255, 0)))
+    escape_text = get_key_surface(key_text_font.render("ESC", True, (0, 255, 0)))
+    space_text = get_key_surface(key_text_font.render(data["space"].upper(), True, (0, 255, 0)))
+
+    instructions = [
+        {"keys": [arrow_left_text, arrow_right_text], "text": data["instructions"]["move_piece"]},
+        {"keys": [arrow_up_text], "text": data["instructions"]["rotate_piece"]},
+        {"keys": [arrow_down_text], "text": data["instructions"]["accelerate_fall_piece"]},
+        {"keys": [space_text], "text": data["instructions"]["pause"]},
+        {"keys": [escape_text], "text": data["instructions"]["quit"]}
+    ]
+
+    instruction_surfaces = get_instruction_surfaces(instructions, key_text_font)
+    instruction_surface = get_instruction_surface(instruction_surfaces)
+
+    width = max(title_text.get_width(), instruction_surface.get_width())
+    height = title_text.get_height() + instruction_surface.get_height() + padding
+    main_menu_surface = pygame.Surface((width, height))
+
+    title_text_rect = title_text.get_rect(centerx=width//2)
+    main_menu_surface.blit(title_text, title_text_rect)
+
+    instruction_surface_rect = \
+        instruction_surface.get_rect(centerx=width//2, top=padding+title_text.get_height())
+    main_menu_surface.blit(instruction_surface, instruction_surface_rect)
+
+    return main_menu_surface
+
+
 def main_menu():
     run = True
     while run:
         window.fill((0, 0, 0))
 
-        draw_text_middle(data["start_text"], int(120 / k), (0, 255, 0), window)
+        main_menu_surface = get_instruction(data["start_text"])
+        main_menu_rect = main_menu_surface.get_rect(center=(screen_width//2, screen_height//2))
+
+        window.blit(main_menu_surface, main_menu_rect)
         pygame.display.update()
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
-
             if event.type == pygame.KEYDOWN:
                 main()
+
     pygame.quit()
 
 
