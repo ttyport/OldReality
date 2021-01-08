@@ -75,8 +75,8 @@ def init_bricks():
             elif level == 3:
                 brick_types = [0] * (i + 2) + [2] * (i + 2) + [1] * (i // 2)
 
-            bricks.append([pygame.Rect(j * (250 // k) + top_left_x + (10 // k),
-                                       i * (50 // k) + top_left_y + (10 // k), 240 // k, 40 // k),
+            bricks.append([pygame.Rect(j * (250 // k) + top_left_x + (5 // k),
+                                       i * (50 // k) + top_left_y + (5 // k), 245 // k, 45 // k),
                            random.choice(brick_types)])
             if bricks[-1][1] == 0:
                 bricks[-1].append((0, 255, 0))
@@ -192,13 +192,13 @@ def draw_bricks():
         for elem in bricks:
             if ball.colliderect(elem[0]):
                 el = elem[0]
-                if abs(ball.right - el.left) <= ball_size / k:
+                if abs(ball.right - el.left) < 15:
                     v_x *= -1
-                elif abs(ball.left - el.right) <= ball_size / k:
+                elif abs(ball.left - el.right) < 15:
                     v_x *= -1
-                elif abs(ball.bottom - el.top) <= ball_size / k and v_y > 0:
+                elif abs(ball.bottom - el.top) < 15 and v_y > 0:
                     v_y *= -1
-                elif abs(ball.top - el.bottom) <= ball_size / k and v_y < 0:
+                elif abs(ball.top - el.bottom) < 15 and v_y < 0:
                     v_y *= -1
 
                 if elem[1] == 0:
@@ -275,13 +275,14 @@ def main():
             pygame.draw.rect(window, (0, 255, 0), player, border_radius=5)
             pygame.draw.rect(window, (0, 255, 0), ball, border_radius=int(ball_size / 2))
             draw_text_middle(data["title"], int(100 / k), (0, 255, 0), window, delta_y=-450 / k)
-            draw_text_middle(f"{data['score']}: {score}", int(100 / k), (0, 255, 0), window, delta_y=-450 / k,
+            draw_text_middle(f"{data['score']}: {score}", int(75 / k), (0, 255, 0), window, delta_y=-450 / k,
                              delta_x=-screen_width / 3)
-            draw_text_middle(f"{data['lives']}: {lives}", int(100 / k), (0, 255, 0), window, delta_y=-450 / k,
+            draw_text_middle(f"{data['lives']}: {lives}", int(75 / k), (0, 255, 0), window, delta_y=-450 / k,
                              delta_x=screen_width / 3)
             pygame.display.update()
             clock.tick(int(60 / k))
         else:
+
             window.fill((0, 0, 0))
             draw_text_middle(data["pause"], int(120 / k), (0, 255, 0), window)
             pygame.display.update()
