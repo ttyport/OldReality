@@ -535,53 +535,6 @@ def check_pause(paused):
     return paused
 
 
-def get_key_surface(text_surface,
-                    color=(0, 255, 0),
-                    bg_color=(0, 0, 0),
-                    paddings_x=30 // k,
-                    paddings_y=20 // k,
-                    border=2,
-                    border_radius=2) -> pygame.Surface:
-    width = paddings_x * 2 + text_surface.get_width()
-    height = paddings_y * 2 + text_surface.get_height()
-
-    key_surf = pygame.Surface((width, height))
-    key_surf.fill(bg_color)
-    pygame.draw.rect(key_surf, color, key_surf.get_rect(),
-                     width=border, border_radius=border_radius)
-
-    text_rect = text_surface.get_rect(center=(width // 2, height // 2))
-    key_surf.blit(text_surface, text_rect)
-
-    return key_surf
-
-
-def get_instruction_surfaces(instructions, font: pygame.font.Font, padding=20 // k):
-    instruction_surfaces = []
-    for el in instructions:
-        keys, instruction_text = el["keys"], el["text"]
-        text_surface = font.render(instruction_text, True, (0, 255, 0))
-
-        keys_width = sum(key.get_width() for key in keys)
-        width = keys_width + padding + text_surface.get_width()
-        height = max(key.get_height() for key in keys)
-
-        instruction_surface = pygame.Surface((width, height))
-        x = 0
-        for key in keys:
-            key_rect = key.get_rect(left=x)
-            instruction_surface.blit(key, key_rect)
-            x += key_rect.width
-
-        x += padding
-
-        text_rect = text_surface.get_rect(left=x, centery=height // 2)
-        instruction_surface.blit(text_surface, text_rect)
-
-        instruction_surfaces.append(instruction_surface)
-    return instruction_surfaces
-
-
 def get_instruction(title: str, padding=60 // k) -> pygame.Surface:
     title_font = pygame.font.Font("resources/fonts/font.ttf", 120 // k)
     key_text_font = pygame.font.Font("resources/fonts/font.ttf", 60 // k)
