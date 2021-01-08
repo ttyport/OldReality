@@ -322,6 +322,20 @@ def draw_window(surface, speed_up_message_time=0, is_speed_up=False, score=0):
     pygame.draw.rect(surface, (0, 255, 0), (top_left_x, top_left_y, play_width, play_height), 5)
 
 
+def get_surfaces_in_line(surfaces, padding=0) -> pygame.Surface:
+    width = max(surf.get_width() for surf in surfaces)
+    height = sum(surf.get_height() for surf in surfaces) + (len(surfaces)-1)*padding
+    surface = pygame.Surface((width, height))
+
+    y = 0
+    for game_over_text in surfaces:
+        game_over_rect = game_over_text.get_rect(centerx=width // 2, top=y)
+        surface.blit(game_over_text, game_over_rect)
+        y += game_over_text.get_height() + padding
+
+    return surface
+
+
 def main():
     global grid
 
@@ -489,10 +503,16 @@ def main():
         clock.tick(fps)
 
     window.fill((0, 0, 0))
-    draw_text_middle(data["first"], int(80 / k), (0, 255, 0), window, delta_y=-30)
-    draw_text_middle(data["second"], int(80 / k), (0, 255, 0), window, delta_y=60)
-    draw_text_middle(data["third"], int(80 / k), (0, 255, 0), window, delta_y=90)
+
+    font = pygame.font.Font('resources/fonts/font.ttf', int(80 / k))
+    game_over_texts = [font.render(data[key], True, (0, 255, 0)) for key in ("first", "second", "third")]
+    game_over_texts.insert(1, pygame.Surface((100, game_over_texts[0].get_height())))
+
+    game_over_surface = get_surfaces_in_line(game_over_texts)
+    game_over_rect = game_over_surface.get_rect(center=(screen_width//2, screen_height//2))
+    window.blit(game_over_surface, game_over_rect)
     pygame.display.update()
+
     run = True
     while run:
         for event in pygame.event.get():
