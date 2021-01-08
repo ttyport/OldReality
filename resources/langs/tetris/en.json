@@ -7,5 +7,13 @@
   "second": "Press <enter> to restart,",
   "third": "or <esc> to exit.",
   "speed_up": "speed up!",
-  "score": "score"
+  "score": "score",
+  "space": "space",
+  "instructions": {
+    "move_piece": "Move piece",
+    "rotate_piece": "Rotate piece",
+    "accelerate_fall_piece": "Accelerate fall piece",
+    "pause": "Pause",
+    "quit": "Quit"
+  }
 }
