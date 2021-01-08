@@ -1,3 +1,5 @@
+from enum import Enum
+
 import pygame
 import random
 import json
@@ -292,6 +294,8 @@ def draw_next_shape(shape, surface):
 
 
 show_speed_up_title = False
+
+
 def draw_window(surface, speed_up_message_time=0, is_speed_up=False, score=0):
     global show_speed_up_title
     surface.fill((0, 0, 0))
@@ -310,7 +314,7 @@ def draw_window(surface, speed_up_message_time=0, is_speed_up=False, score=0):
             surface.blit(label, (top_left_x + play_width / 2 - (label.get_width() / 2), block_size))
 
     score_text = font.render(f'{data["score"].upper()}: {score}', True, (255, 200, 100))
-    surface.blit(score_text, (top_left_x + play_width / 2 - (score_text.get_width() / 2), block_size * 2 + 30//k))
+    surface.blit(score_text, (top_left_x + play_width / 2 - (score_text.get_width() / 2), block_size * 2 + 30 // k))
 
     for i in range(len(grid)):
         for j in range(len(grid[i])):
@@ -322,14 +326,29 @@ def draw_window(surface, speed_up_message_time=0, is_speed_up=False, score=0):
     pygame.draw.rect(surface, (0, 255, 0), (top_left_x, top_left_y, play_width, play_height), 5)
 
 
-def get_surfaces_in_line(surfaces, padding=0) -> pygame.Surface:
+class Alignment(Enum):
+    LEFT = 0
+    CENTER = 1
+    RIGHT = 2
+
+
+def get_surfaces_in_line(surfaces, alignment=Alignment.LEFT, padding=0) \
+        -> pygame.Surface:
     width = max(surf.get_width() for surf in surfaces)
-    height = sum(surf.get_height() for surf in surfaces) + (len(surfaces)-1)*padding
+    height = sum(surf.get_height() for surf in surfaces) + (len(surfaces) - 1) * padding
     surface = pygame.Surface((width, height))
 
     y = 0
     for game_over_text in surfaces:
-        game_over_rect = game_over_text.get_rect(centerx=width // 2, top=y)
+        if alignment == Alignment.CENTER:
+            game_over_rect = game_over_text.get_rect(centerx=width // 2, top=y)
+        elif alignment == Alignment.LEFT:
+            game_over_rect = game_over_text.get_rect(left=0, top=y)
+        elif alignment == Alignment.RIGHT:
+            game_over_rect = game_over_text.get_rect(right=width, top=y)
+        else:
+            game_over_rect = game_over_text.get_rect()
+
         surface.blit(game_over_text, game_over_rect)
         y += game_over_text.get_height() + padding
 
@@ -508,8 +527,8 @@ def main():
     game_over_texts = [font.render(data[key], True, (0, 255, 0)) for key in ("first", "second", "third")]
     game_over_texts.insert(1, pygame.Surface((100, game_over_texts[0].get_height())))
 
-    game_over_surface = get_surfaces_in_line(game_over_texts)
-    game_over_rect = game_over_surface.get_rect(center=(screen_width//2, screen_height//2))
+    game_over_surface = get_surfaces_in_line(game_over_texts, Alignment.CENTER)
+    game_over_rect = game_over_surface.get_rect(center=(screen_width // 2, screen_height // 2))
     window.blit(game_over_surface, game_over_rect)
     pygame.display.update()
 
@@ -545,25 +564,25 @@ def check_pause(paused):
 def get_key_surface(text_surface,
                     color=(0, 255, 0),
                     bg_color=(0, 0, 0),
-                    paddings_x=30//k,
-                    paddings_y=20//k,
+                    paddings_x=30 // k,
+                    paddings_y=20 // k,
                     border=2,
                     border_radius=2) -> pygame.Surface:
-    width = paddings_x*2 + text_surface.get_width()
-    height = paddings_y*2 + text_surface.get_height()
+    width = paddings_x * 2 + text_surface.get_width()
+    height = paddings_y * 2 + text_surface.get_height()
 
     key_surf = pygame.Surface((width, height))
     key_surf.fill(bg_color)
     pygame.draw.rect(key_surf, color, key_surf.get_rect(),
                      width=border, border_radius=border_radius)
 
-    text_rect = text_surface.get_rect(center=(width//2, height//2))
+    text_rect = text_surface.get_rect(center=(width // 2, height // 2))
     key_surf.blit(text_surface, text_rect)
 
     return key_surf
 
 
-def get_instruction_surfaces(instructions, font: pygame.font.Font, padding=20//k):
+def get_instruction_surfaces(instructions, font: pygame.font.Font, padding=20 // k):
     instruction_surfaces = []
     for el in instructions:
         keys, instruction_text = el["keys"], el["text"]
@@ -589,7 +608,7 @@ def get_instruction_surfaces(instructions, font: pygame.font.Font, padding=20//k
     return instruction_surfaces
 
 
-def get_instruction_surface(instruction_surfaces, padding=40//k) \
+def get_instruction_surface(instruction_surfaces, padding=40 // k) \
         -> pygame.Surface:
     width = max(surf.get_width() for surf in instruction_surfaces)
     height = sum(surf.get_height() for surf in instruction_surfaces) \
@@ -605,7 +624,7 @@ def get_instruction_surface(instruction_surfaces, padding=40//k) \
     return instruction_surface
 
 
-def get_instruction(title: str, padding=60//k) -> pygame.Surface:
+def get_instruction(title: str, padding=60 // k) -> pygame.Surface:
     title_font = pygame.font.Font("resources/fonts/font.ttf", 120 // k)
     title_text = title_font.render(title, True, (0, 255, 0))
 
@@ -633,11 +652,11 @@ def get_instruction(title: str, padding=60//k) -> pygame.Surface:
     height = title_text.get_height() + instruction_surface.get_height() + padding
     main_menu_surface = pygame.Surface((width, height))
 
-    title_text_rect = title_text.get_rect(centerx=width//2)
+    title_text_rect = title_text.get_rect(centerx=width // 2)
     main_menu_surface.blit(title_text, title_text_rect)
 
     instruction_surface_rect = \
-        instruction_surface.get_rect(centerx=width//2, top=padding+title_text.get_height())
+        instruction_surface.get_rect(centerx=width // 2, top=padding + title_text.get_height())
     main_menu_surface.blit(instruction_surface, instruction_surface_rect)
 
     return main_menu_surface
@@ -649,7 +668,7 @@ def main_menu():
         window.fill((0, 0, 0))
 
         main_menu_surface = get_instruction(data["start_text"])
-        main_menu_rect = main_menu_surface.get_rect(center=(screen_width//2, screen_height//2))
+        main_menu_rect = main_menu_surface.get_rect(center=(screen_width // 2, screen_height // 2))
 
         window.blit(main_menu_surface, main_menu_rect)
         pygame.display.update()
