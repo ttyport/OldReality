@@ -585,7 +585,7 @@ def get_instruction_surface(instruction_surfaces, padding=40//k) \
     return instruction_surface
 
 
-def get_instruction(title: str, padding=30) -> pygame.Surface:
+def get_instruction(title: str, padding=60//k) -> pygame.Surface:
     title_font = pygame.font.Font("resources/fonts/font.ttf", 120 // k)
     title_text = title_font.render(title, True, (0, 255, 0))
 
