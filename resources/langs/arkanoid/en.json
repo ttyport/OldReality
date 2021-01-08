@@ -1,11 +1,17 @@
 {
   "title": "Arkanoid",
   "start_text": "Press any key to begin.",
-  "pause": "Paused",
+  "paused": "Paused",
   "score": "score",
   "lives": "lives",
   "first_lose": "You Lost.",
   "first_won": "You Won.",
   "second": "Press <enter> to restart,",
-  "third": "or <esc> to exit."
+  "space": "space",
+  "third": "or <esc> to exit.",
+  "instructions": {
+    "move_player": "Move player",
+    "pause": "Pause",
+    "quit": "Quit"
+  }
 }
