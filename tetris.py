@@ -608,22 +608,6 @@ def get_instruction_surfaces(instructions, font: pygame.font.Font, padding=20 //
     return instruction_surfaces
 
 
-def get_instruction_surface(instruction_surfaces, padding=40 // k) \
-        -> pygame.Surface:
-    width = max(surf.get_width() for surf in instruction_surfaces)
-    height = sum(surf.get_height() for surf in instruction_surfaces) \
-             + (len(instruction_surfaces) - 1) * padding
-
-    instruction_surface = pygame.Surface((width, height))
-
-    y = 0
-    for instruction in instruction_surfaces:
-        instruction_surface.blit(instruction, (0, y))
-        y += instruction.get_height() + padding
-
-    return instruction_surface
-
-
 def get_instruction(title: str, padding=60 // k) -> pygame.Surface:
     title_font = pygame.font.Font("resources/fonts/font.ttf", 120 // k)
     title_text = title_font.render(title, True, (0, 255, 0))
@@ -646,7 +630,7 @@ def get_instruction(title: str, padding=60 // k) -> pygame.Surface:
     ]
 
     instruction_surfaces = get_instruction_surfaces(instructions, key_text_font)
-    instruction_surface = get_instruction_surface(instruction_surfaces)
+    instruction_surface = get_surfaces_in_line(instruction_surfaces)
 
     width = max(title_text.get_width(), instruction_surface.get_width())
     height = title_text.get_height() + instruction_surface.get_height() + padding
