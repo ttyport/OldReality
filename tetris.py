@@ -332,7 +332,7 @@ class Alignment(Enum):
     RIGHT = 2
 
 
-def get_surfaces_in_line(surfaces, alignment=Alignment.LEFT, padding=0) \
+def get_surfaces_into_column(surfaces, alignment=Alignment.LEFT, padding=0) \
         -> pygame.Surface:
     width = max(surf.get_width() for surf in surfaces)
     height = sum(surf.get_height() for surf in surfaces) + (len(surfaces) - 1) * padding
@@ -527,7 +527,7 @@ def main():
     game_over_texts = [font.render(data[key], True, (0, 255, 0)) for key in ("first", "second", "third")]
     game_over_texts.insert(1, pygame.Surface((100, game_over_texts[0].get_height())))
 
-    game_over_surface = get_surfaces_in_line(game_over_texts, Alignment.CENTER)
+    game_over_surface = get_surfaces_into_column(game_over_texts, Alignment.CENTER)
     game_over_rect = game_over_surface.get_rect(center=(screen_width // 2, screen_height // 2))
     window.blit(game_over_surface, game_over_rect)
     pygame.display.update()
@@ -630,7 +630,7 @@ def get_instruction(title: str, padding=60 // k) -> pygame.Surface:
     ]
 
     instruction_surfaces = get_instruction_surfaces(instructions, key_text_font)
-    instruction_surface = get_surfaces_in_line(instruction_surfaces)
+    instruction_surface = get_surfaces_into_column(instruction_surfaces)
 
     width = max(title_text.get_width(), instruction_surface.get_width())
     height = title_text.get_height() + instruction_surface.get_height() + padding
