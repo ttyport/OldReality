@@ -1,5 +1,5 @@
-from enum import Enum
 from common.surface_combiner import Alignment, get_surfaces_into_column
+from common.learning_controls import LearningControlsSurface, KeySurface
 
 import pygame
 import random
@@ -582,16 +582,18 @@ def get_instruction_surfaces(instructions, font: pygame.font.Font, padding=20 //
 
 def get_instruction(title: str, padding=60 // k) -> pygame.Surface:
     title_font = pygame.font.Font("resources/fonts/font.ttf", 120 // k)
-    title_text = title_font.render(title, True, (0, 255, 0))
-
     key_text_font = pygame.font.Font("resources/fonts/font.ttf", 60 // k)
 
-    arrow_left_text = get_key_surface(key_text_font.render("←", True, (0, 255, 0)))
-    arrow_right_text = get_key_surface(key_text_font.render("→", True, (0, 255, 0)))
-    arrow_up_text = get_key_surface(key_text_font.render("↑", True, (0, 255, 0)))
-    arrow_down_text = get_key_surface(key_text_font.render("↓", True, (0, 255, 0)))
-    escape_text = get_key_surface(key_text_font.render("ESC", True, (0, 255, 0)))
-    space_text = get_key_surface(key_text_font.render(data["space"].upper(), True, (0, 255, 0)))
+    key_paddings = (30//k, 20//k)
+    title_indent = 20//k
+
+    arrow_left_text = KeySurface(key_text_font.render("←", True, (0, 255, 0)), (0, 255, 0), (0, 0, 0), key_paddings)
+    arrow_right_text = KeySurface(key_text_font.render("→", True, (0, 255, 0)), (0, 255, 0), (0, 0, 0), key_paddings)
+    arrow_up_text = KeySurface(key_text_font.render("↑", True, (0, 255, 0)), (0, 255, 0), (0, 0, 0), key_paddings)
+    arrow_down_text = KeySurface(key_text_font.render("↓", True, (0, 255, 0)), (0, 255, 0), (0, 0, 0), key_paddings)
+    space_text = KeySurface(key_text_font.render(data["space"].upper(), True, (0, 255, 0)), (0, 255, 0), (0, 0, 0),
+                            key_paddings)
+    escape_text = KeySurface(key_text_font.render("ESC", True, (0, 255, 0)), (0, 255, 0), (0, 0, 0), key_paddings)
 
     instructions = [
         {"keys": [arrow_left_text, arrow_right_text], "text": data["instructions"]["move_piece"]},
@@ -601,20 +603,8 @@ def get_instruction(title: str, padding=60 // k) -> pygame.Surface:
         {"keys": [escape_text], "text": data["instructions"]["quit"]}
     ]
 
-    instruction_surfaces = get_instruction_surfaces(instructions, key_text_font)
-    instruction_surface = get_surfaces_into_column(instruction_surfaces)
-
-    width = max(title_text.get_width(), instruction_surface.get_width())
-    height = title_text.get_height() + instruction_surface.get_height() + padding
-    main_menu_surface = pygame.Surface((width, height))
-
-    title_text_rect = title_text.get_rect(centerx=width // 2)
-    main_menu_surface.blit(title_text, title_text_rect)
-
-    instruction_surface_rect = \
-        instruction_surface.get_rect(centerx=width // 2, top=padding + title_text.get_height())
-    main_menu_surface.blit(instruction_surface, instruction_surface_rect)
-
+    main_menu_surface = LearningControlsSurface(title, (0, 255, 0), instructions, padding,
+                                                title_indent, key_text_font, title_font)
     return main_menu_surface
 
 
