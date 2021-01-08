@@ -1,6 +1,5 @@
 import pygame
 import random
-import importlib
 import json
 
 from configmodel import Config
@@ -38,6 +37,8 @@ ball_size = 30 / k
 top_left_x = (screen_width - play_width) // 2
 top_left_y = screen_height - play_height - 2
 
+level = 1
+
 v_x = random.choice((-10, 10))
 v_y = 10
 v_player = 0
@@ -65,9 +66,35 @@ def init_objects():
 
 def init_bricks():
     global bricks
-    for i in range(3):
+    for i in range(level + 2):
         for j in range(6):
-            bricks.append(pygame.Rect(j * (250 // k) + top_left_x + (10 // k), i * (50 // k) + top_left_y + (10 // k), 240 // k, 40 // k))
+            if level == 1:
+                brick_types = [0]
+            elif level == 2:
+                brick_types = [0] * (i + 4) + [2] * (i + 1)
+            elif level == 3:
+                brick_types = [0] * (i + 2) + [2] * (i + 2) + [1] * (i // 2)
+
+            bricks.append([pygame.Rect(j * (250 // k) + top_left_x + (10 // k),
+                                       i * (50 // k) + top_left_y + (10 // k), 240 // k, 40 // k),
+                           random.choice(brick_types)])
+            if bricks[-1][1] == 0:
+                bricks[-1].append((0, 255, 0))
+            elif bricks[-1][1] == 1:
+                bricks[-1].append((255, 0, 0))
+            else:
+                bricks[-1].append((255, 165, 0))
+            if bricks[-1][1] == 2:
+                bricks[-1].append(0)
+    if level == 3:
+        count = 0
+        for el in bricks:
+            if el[1] == 1:
+                count += 1
+        if count == 0:
+            el = bricks[random.randint(0, len(bricks))]
+            el[1] = 2
+            bricks[-1] = (255, 0, 0)
 
 
 def draw_text_middle(text, size, color, surface, delta_x=0, delta_y=0, left=False):
@@ -78,7 +105,7 @@ def draw_text_middle(text, size, color, surface, delta_x=0, delta_y=0, left=Fals
                              screen_height / 2 + delta_y))
     else:
         surface.blit(label, (screen_width / 2 - (label.get_width() / 2) + delta_x,
-                            screen_height / 2 - label.get_height() * 2 + delta_y))
+                             screen_height / 2 - label.get_height() * 2 + delta_y))
 
 
 def draw_player():
@@ -90,7 +117,7 @@ def draw_player():
 
 
 def restart():
-    global v_x, v_y, time, lives
+    global v_x, v_y, time, lives, brick_types
     if lives <= 0:
         run = True
         while run:
@@ -113,9 +140,8 @@ def restart():
         ball.x, ball.y = player.center[0] - ball_size / 2, player.top - ball_size
 
         current_time = pygame.time.get_ticks()
-
         if current_time - time < 2100:
-            v_x, v_y = 0, 0
+                v_x, v_y = 0, 0
         else:
             v_x, v_y = random.choice((-10, 10)), 10
             time = None
@@ -132,6 +158,7 @@ def draw_ball():
         v_x *= -1
     elif ball.top <= border.top + 5:
         v_y *= -1
+
     if ball.colliderect(player):
         if abs(ball.right - player.left) < 15:
             v_x *= -1
@@ -147,24 +174,45 @@ def draw_ball():
         time = pygame.time.get_ticks()
 
 
-def draw_bricks():
-    global v_y, v_x, score
-    if len(bricks) > 0:
-        for el in bricks:
-            pygame.draw.rect(window, (0, 255, 0), el, border_radius=2)
+def check_empty_bricks():
+    count_zero = 0
+    for el in bricks:
+        if el[1] in (0, 2):
+            count_zero += 1
 
+    return False if count_zero == 0 else True
+
+
+def draw_bricks():
+    global v_y, v_x, score, level, time, lives
+    if check_empty_bricks() or level < 3:
         for el in bricks:
-            if ball.colliderect(el):
-                score += 5
-                if abs(ball.right - el.left) < 15:
+            pygame.draw.rect(window, el[2], el[0], border_radius=2)
+
+        for elem in bricks:
+            if ball.colliderect(elem[0]):
+                el = elem[0]
+                if abs(ball.right - el.left) <= ball_size / k:
                     v_x *= -1
-                elif abs(ball.left - el.right) < 15:
+                elif abs(ball.left - el.right) <= ball_size / k:
                     v_x *= -1
-                elif abs(ball.bottom - el.top) < 15 and v_y > 0:
+                elif abs(ball.bottom - el.top) <= ball_size / k and v_y > 0:
                     v_y *= -1
-                elif abs(ball.top - el.bottom) < 15 and v_y < 0:
+                elif abs(ball.top - el.bottom) <= ball_size / k and v_y < 0:
                     v_y *= -1
-                bricks.remove(el)
+
+                if elem[1] == 0:
+                    score += 5
+                    bricks.remove(elem)
+                elif elem[1] == 2:
+                    print(elem)
+                    if elem[-1] < 1:
+                        elem[-1] += 1
+                        elem[2] = (255, 255, 0)
+                    else:
+                        score += 5
+                        bricks.remove(elem)
+
     else:
         run = True
         while run:
@@ -172,6 +220,7 @@ def draw_bricks():
             draw_text_middle(data["first_won"], int(80 / k), (0, 255, 0), window, delta_y=-60 / k)
             draw_text_middle(data["second"], int(80 / k), (0, 255, 0), window, delta_y=120 / k)
             draw_text_middle(data["third"], int(80 / k), (0, 255, 0), window, delta_y=180 / k)
+
             pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -186,8 +235,11 @@ def draw_bricks():
 
 
 def main():
+    global v_player, v_y, v_x, lives, level, time, score
+    level = 1
+    score = 0
+    lives = 5
     init_objects()
-    global v_player, v_y, v_x, lives
     init_bricks()
     paused = False
     running = True
@@ -235,7 +287,20 @@ def main():
             pygame.display.update()
             paused = check_pause(paused)
             continue
+
+        if not check_empty_bricks() and level < 3:
+            level += 1
+            lives = 5
+            time = pygame.time.get_ticks()
+            # Level up message 🤷
+            draw_text_middle("Level Up!", int(100 // k), (0, 255, 0), window)
+            restart()
+            main_menu(True)
     pygame.quit()
+
+
+def next_lvl():
+    pass
 
 
 def check_pause(paused):
@@ -249,20 +314,23 @@ def check_pause(paused):
     return paused
 
 
-def main_menu():
-    run = True
-    while run:
-        window.fill((0, 0, 0))
+def main_menu(launch=False):
+    if not launch:
+        run = True
+        while run:
+            window.fill((0, 0, 0))
 
-        draw_text_middle(data["start_text"], int(120 / k), (0, 255, 0), window)
-        pygame.display.update()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
+            draw_text_middle(data["start_text"], int(120 / k), (0, 255, 0), window)
+            pygame.display.update()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
 
-            if event.type == pygame.KEYDOWN:
-                main()
-    pygame.quit()
+                if event.type == pygame.KEYDOWN:
+                    main()
+        pygame.quit()
+    else:
+        main()
 
 
 window = pygame.display.set_mode((screen_width, screen_height))

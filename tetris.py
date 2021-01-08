@@ -292,6 +292,8 @@ def draw_next_shape(shape, surface):
 
 
 show_speed_up_title = False
+
+
 def draw_window(surface, speed_up_message_time=0, is_speed_up=False, score=0):
     global show_speed_up_title
     surface.fill((0, 0, 0))
