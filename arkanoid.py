@@ -359,13 +359,13 @@ def main_menu(launch=False):
         run = True
         while run:
             window.fill((0, 0, 0))
-
-            draw_text_middle(data["start_text"], int(120 / k), (0, 255, 0), window)
+            main_menu_surface = get_instruction(data["start_text"])
+            main_menu_rect = main_menu_surface.get_rect(center=(screen_width // 2, screen_height // 2))
+            window.blit(main_menu_surface, main_menu_rect)
             pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
-
                 if event.type == pygame.KEYDOWN:
                     main()
         pygame.quit()
