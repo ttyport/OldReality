@@ -1,2 +1,2 @@
-Resolution=4K
+Resolution=FullHD
 Lang=en
