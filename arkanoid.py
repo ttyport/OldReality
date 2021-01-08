@@ -4,6 +4,7 @@ import importlib
 import json
 
 from configmodel import Config
+from common.surface_combiner import Alignment, get_surfaces_into_column
 
 configs = [
     Config('4k', 1610, 1400),
@@ -95,9 +96,15 @@ def restart():
         run = True
         while run:
             window.fill((0, 0, 0))
-            draw_text_middle(data["first_lose"], int(80 / k), (0, 255, 0), window, delta_y=-60 / k)
-            draw_text_middle(data["second"], int(80 / k), (0, 255, 0), window, delta_y=120 / k)
-            draw_text_middle(data["third"], int(80 / k), (0, 255, 0), window, delta_y=180 / k)
+
+            font = pygame.font.Font('resources/fonts/font.ttf', int(80 / k))
+            game_over_texts = [font.render(data[key], True, (0, 255, 0)) for key in ("first_lose", "second", "third")]
+            game_over_texts.insert(1, pygame.Surface((100, game_over_texts[0].get_height())))
+
+            game_over_surface = get_surfaces_into_column(game_over_texts, Alignment.CENTER)
+            game_over_rect = game_over_surface.get_rect(center=(screen_width // 2, screen_height // 2))
+            window.blit(game_over_surface, game_over_rect)
+
             pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -169,9 +176,15 @@ def draw_bricks():
         run = True
         while run:
             window.fill((0, 0, 0))
-            draw_text_middle(data["first_won"], int(80 / k), (0, 255, 0), window, delta_y=-60 / k)
-            draw_text_middle(data["second"], int(80 / k), (0, 255, 0), window, delta_y=120 / k)
-            draw_text_middle(data["third"], int(80 / k), (0, 255, 0), window, delta_y=180 / k)
+
+            font = pygame.font.Font('resources/fonts/font.ttf', int(80 / k))
+            game_over_texts = [font.render(data[key], True, (0, 255, 0)) for key in ("first_won", "second", "third")]
+            game_over_texts.insert(1, pygame.Surface((100, game_over_texts[0].get_height())))
+
+            game_over_surface = get_surfaces_into_column(game_over_texts, Alignment.CENTER)
+            game_over_rect = game_over_surface.get_rect(center=(screen_width // 2, screen_height // 2))
+            window.blit(game_over_surface, game_over_rect)
+
             pygame.display.update()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
