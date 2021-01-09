@@ -1,6 +1,6 @@
 import pygame
 import json
-
+from common.learning_controls import LearningControlsSurface, KeySurface
 from configmodel import Config
 
 
@@ -65,6 +65,8 @@ def draw_list():
         el = data[el]
         draw_text_middle(f"{el} <{config[i]}>", int(100 / k), (0, 255, 0), window, delta_x=-600 / k,
                          delta_y=i * 100 / k - 200 / k, left=True)
+
+
 
 
 def main_menu():

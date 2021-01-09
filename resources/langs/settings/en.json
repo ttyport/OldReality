@@ -1,5 +1,11 @@
 {
   "title": "Settings",
   "Resolution": "Resolution",
-  "Language": "Language"
+  "Language": "Language",
+  "instructions": {
+    "select": "Select item",
+    "edit": "Edit item",
+    "apply": "Apply changes",
+    "quit": "Quit"
+  }
 }
