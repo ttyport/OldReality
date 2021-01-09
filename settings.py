@@ -112,7 +112,7 @@ def draw_help():
 
 
 def main_menu():
-    global x_coord, edited
+    global x_coord, edited, startup_config
     running = True
     while running:
         window.fill((0, 0, 0))
@@ -149,11 +149,14 @@ def main_menu():
                 elif event.key == pygame.K_RETURN:
                     write_config()
                     reconfig()
+                    startup_config = config.copy()
                     edited = False
 
                 elif event.key == pygame.K_ESCAPE:
                     import main
                     main.main()
+            if config == startup_config:
+                edited = False
         update_cursor()
         draw_list()
         draw_help()
@@ -177,6 +180,7 @@ k = 1600 / screen_width
 
 settings_list = ["Language", "Resolution"]
 config = [lang, res]
+startup_config = config.copy()
 language = ["en", "ru"]
 resolution = ["4K", "FullHD"]
 settings = [language, resolution]
