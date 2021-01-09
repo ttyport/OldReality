@@ -17,7 +17,7 @@ clock = pygame.time.Clock()
 screen_width = 1610
 screen_height = 1400
 
-with open("config.txt", encoding="utf-8") as conf:
+with open("../config.txt", encoding="utf-8") as conf:
     conf = conf.read().split("\n")
     resolution = conf[0].split("=")[1].lower()
     lang = conf[1].split("=")[1].lower()
@@ -100,7 +100,7 @@ def init_bricks():
 
 
 def draw_text_middle(text, size, color, surface, delta_x=0, delta_y=0, left=False):
-    font = pygame.font.Font('resources/fonts/font.ttf', size)
+    font = pygame.font.Font('../resources/fonts/font.ttf', size)
     label = font.render(text, True, color)
     if left:
         surface.blit(label, (screen_width / 2 + delta_x,
@@ -125,7 +125,7 @@ def restart():
         while run:
             window.fill((0, 0, 0))
 
-            font = pygame.font.Font('resources/fonts/font.ttf', int(80 / k))
+            font = pygame.font.Font('../resources/fonts/font.ttf', int(80 / k))
             game_over_texts = [font.render(data[key], True, (0, 255, 0)) for key in ("first_lose", "second", "third")]
             game_over_texts.insert(1, pygame.Surface((100, game_over_texts[0].get_height())))
 
@@ -227,7 +227,7 @@ def draw_bricks():
         while run:
             window.fill((0, 0, 0))
 
-            font = pygame.font.Font('resources/fonts/font.ttf', int(80 / k))
+            font = pygame.font.Font('../resources/fonts/font.ttf', int(80 / k))
             game_over_texts = [font.render(data[key], True, (0, 255, 0)) for key in ("first_won", "second", "third")]
             game_over_texts.insert(1, pygame.Surface((100, game_over_texts[0].get_height())))
 
@@ -332,8 +332,8 @@ def check_pause(paused):
 
 
 def get_instruction(title: str, padding=60 // k) -> pygame.Surface:
-    title_font = pygame.font.Font("resources/fonts/font.ttf", 120 // k)
-    key_text_font = pygame.font.Font("resources/fonts/font.ttf", 60 // k)
+    title_font = pygame.font.Font("../resources/fonts/font.ttf", 120 // k)
+    key_text_font = pygame.font.Font("../resources/fonts/font.ttf", 60 // k)
 
     key_paddings = (30//k, 20//k)
     title_indent = 20//k

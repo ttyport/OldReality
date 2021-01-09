@@ -4,8 +4,9 @@ from common.learning_controls import LearningControlsSurface, KeySurface
 import pygame
 import random
 import json
+import os
 
-from configmodel import Config
+from common.configmodel import Config
 
 configs = [
     Config('4k', 1600, 1560, 4),
@@ -18,7 +19,7 @@ pygame.font.init()
 screen_width = 800
 screen_height = 700
 
-with open("config.txt", encoding="utf-8") as conf:
+with open(f"{str(os.path.expanduser('~'))}/.oldreality/config.txt", encoding="utf-8") as conf:
     conf = conf.read().split("\n")
     resolution = conf[0].split("=")[1].lower()
     lang = conf[1].split("=")[1].lower()
@@ -30,22 +31,19 @@ with open("config.txt", encoding="utf-8") as conf:
 # Sound
 
 pygame.mixer.init()
-clear_rows_sound = pygame.mixer.Sound("resources/sounds/beep.ogg")
-speed_up_sound = pygame.mixer.Sound("resources/sounds/score.ogg")
+clear_rows_sound = pygame.mixer.Sound("/usr/share/oldreality/app/resources/sounds/beep.ogg")
+speed_up_sound = pygame.mixer.Sound("/usr/share/oldreality/app/resources/sounds/score.ogg")
 
-try:
-    with open("config.txt", encoding="utf-8") as conf:
-        conf = conf.read().split("\n")
-        resolution = conf[0].split("=")[1].lower()
-        lang = conf[1].split("=")[1].lower()
-        for config in configs:
-            if resolution == config.resolution_name:
-                screen_width = config.screen_width
-                screen_height = config.screen_height
-except Exception as e:
-    print(e)
+with open(f"{str(os.path.expanduser('~'))}/.oldreality/config.txt", encoding="utf-8") as conf:
+    conf = conf.read().split("\n")
+    resolution = conf[0].split("=")[1].lower()
+    lang = conf[1].split("=")[1].lower()
+    for config in configs:
+        if resolution == config.resolution_name:
+            screen_width = config.screen_width
+            screen_height = config.screen_height
 
-with open(f"resources/langs/tetris/{lang}.json", encoding="utf-8") as text:
+with open(f"/usr/share/oldreality/app/resources/langs/tetris/{lang}.json", encoding="utf-8") as text:
     data = json.load(text)
 
 k = 1600 // screen_width
@@ -233,7 +231,7 @@ def get_shape():
 
 
 def draw_text_middle(text, size, color, surface, delta_x=0, delta_y=0):
-    font = pygame.font.Font('resources/fonts/font.ttf', size)
+    font = pygame.font.Font('/usr/share/oldreality/app/resources/fonts/font.ttf', size)
     label = font.render(text, True, color)
 
     surface.blit(label, (top_left_x + play_width / 2 - (label.get_width() / 2) + delta_x,
@@ -275,7 +273,7 @@ def clear_rows(grid, locked) -> int:
 
 
 def draw_next_shape(shape, surface):
-    font = pygame.font.Font('resources/fonts/font.ttf', int(60 / k))
+    font = pygame.font.Font('/usr/share/oldreality/app/resources/fonts/font.ttf', int(60 / k))
     label = font.render(data["next_piece"], True, (0, 255, 0))
 
     sx = top_left_x + play_width + 50
@@ -301,7 +299,7 @@ def draw_window(surface, speed_up_message_time=0, is_speed_up=False, score=0):
     global show_speed_up_title
     surface.fill((0, 0, 0))
     # Tetris Title
-    font = pygame.font.Font('resources/fonts/font.ttf', int(120 / k))
+    font = pygame.font.Font('/usr/share/oldreality/app/resources/fonts/font.ttf', int(120 / k))
 
     if speed_up_message_time % fps == 0:
         show_speed_up_title = not show_speed_up_title
@@ -497,7 +495,7 @@ def main():
 
     window.fill((0, 0, 0))
 
-    font = pygame.font.Font('resources/fonts/font.ttf', int(80 / k))
+    font = pygame.font.Font('/usr/share/oldreality/app/resources/fonts/font.ttf', int(80 / k))
     game_over_texts = [font.render(data[key], True, (0, 255, 0)) for key in ("first", "second", "third")]
     game_over_texts.insert(1, pygame.Surface((100, game_over_texts[0].get_height())))
 
@@ -536,8 +534,8 @@ def check_pause(paused):
 
 
 def get_instruction(title: str, padding=60 // k) -> pygame.Surface:
-    title_font = pygame.font.Font("resources/fonts/font.ttf", 120 // k)
-    key_text_font = pygame.font.Font("resources/fonts/font.ttf", 60 // k)
+    title_font = pygame.font.Font("/usr/share/oldreality/app/resources/fonts/font.ttf", 120 // k)
+    key_text_font = pygame.font.Font("/usr/share/oldreality/app/resources/fonts/font.ttf", 60 // k)
 
     key_paddings = (30//k, 20//k)
     title_indent = 20//k

@@ -4,7 +4,13 @@ import sys
 import os
 import json
 
-from configmodel import Config
+from common.configmodel import Config
+
+if not os.path.exists(f"{str(os.path.expanduser('~'))}/.oldreality/"):
+    os.makedirs(f"{str(os.path.expanduser('~'))}/.oldreality/")
+    make_config = open(f"{str(os.path.expanduser('~'))}/.oldreality/config.txt", "w+", encoding="utf-8")
+    print("Resolution=FullHD\nLang=en", file=make_config)
+    make_config.close()
 
 configs = [
     Config('4k', 1600, 1400),
@@ -17,7 +23,7 @@ clock = pygame.time.Clock()
 screen_width = 1600
 screen_height = 1400
 
-with open("config.txt", encoding="utf-8") as conf:
+with open(f"{str(os.path.expanduser('~'))}/.oldreality/config.txt", encoding="utf-8") as conf:
     conf = conf.read().split("\n")
     resolution = conf[0].split("=")[1].lower()
     lang = conf[1].split("=")[1].lower()
@@ -27,7 +33,7 @@ with open("config.txt", encoding="utf-8") as conf:
             screen_width = config.screen_width
             screen_height = config.screen_height
 
-with open(f"resources/langs/main/{lang}.json", encoding="utf-8") as text:
+with open(f"/usr/share/oldreality/app/resources/langs/main/{lang}.json", encoding="utf-8") as text:
     data = json.load(text)
 
 
@@ -41,7 +47,7 @@ x_coord = 0
 
 
 def load_image(name, colorkey=None):
-    fullname = f"resources/images/{name}"
+    fullname = f"/usr/share/oldreality/app/resources/images/{name}"
     # если файл не существует, то выходим
     if not os.path.isfile(fullname):
         sys.exit()
@@ -55,7 +61,7 @@ for i, el in enumerate(games_list):
 
 def draw_text_middle(text, size, color, surface, delta_x=0, delta_y=0, left=False):
     size = size - 5 * (1 if int(k) == 2 else 2)
-    font = pygame.font.Font('resources/fonts/font.ttf', size)
+    font = pygame.font.Font(f'/usr/share/oldreality/app/resources/fonts/font.ttf', size)
     label = font.render(text, True, color)
     if left:
         surface.blit(label, (screen_width / 2 + delta_x,

@@ -3,7 +3,7 @@ import random
 import json
 
 from common.learning_controls import KeySurface, LearningControlsSurface
-from configmodel import Config
+from scripts.configmodel import Config
 
 configs = [
     Config('4k', 1600, 1400),

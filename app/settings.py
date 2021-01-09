@@ -1,7 +1,8 @@
 import pygame
 import json
-from common.learning_controls import LearningControlsSurface, KeySurface, InstructionSurface
-from configmodel import Config
+import os
+from common.learning_controls import KeySurface
+from common.configmodel import Config
 
 
 def reconfig():
@@ -10,7 +11,7 @@ def reconfig():
         Config('4K', 1600, 1400),
         Config('FullHD', 800, 700)
     ]
-    with open("config.txt", encoding="utf-8") as conf:
+    with open(f"{str(os.path.expanduser('~'))}/.oldreality/config.txt", encoding="utf-8") as conf:
         conf = conf.read().split("\n")
         res = conf[0].split("=")[1]
         lang = conf[1].split("=")[1]
@@ -19,7 +20,7 @@ def reconfig():
                 screen_width = _config.screen_width
                 screen_height = _config.screen_height
 
-    with open(f"resources/langs/settings/{lang}.json", encoding="utf-8") as text:
+    with open(f"/usr/share/oldreality/app/resources/langs/settings/{lang}.json", encoding="utf-8") as text:
         data = json.load(text)
 
     window = pygame.display.set_mode((screen_width, screen_height))
@@ -27,14 +28,14 @@ def reconfig():
 
 
 def write_config():
-    with open("config.txt", "w", encoding="utf-8") as conf:
+    with open(f"{str(os.path.expanduser('~'))}/.oldreality/config.txt", "w", encoding="utf-8") as conf:
         print(f"Resolution={config[1]}", file=conf)
         print(f"Lang={config[0]}", file=conf)
 
 
 def draw_text_middle(text, size, color, surface, delta_x=0, delta_y=0, x=None, left=False):
     size = size - 5 * (1 if int(k) == 2 else 2)
-    font = pygame.font.Font('resources/fonts/font.ttf', size)
+    font = pygame.font.Font('/usr/share/oldreality/app/resources/fonts/font.ttf', size)
     label = font.render(text, True, color)
     _x = x if x else screen_width / 2
     if left:
@@ -49,7 +50,7 @@ def label_size():
     size = int(100 / k)
     color = (0, 0, 0)
     text = f"{data[settings_list[x_coord]]} <{config[x_coord]}>"
-    font = pygame.font.Font('resources/fonts/font.ttf', size)
+    font = pygame.font.Font('/usr/share/oldreality/app/resources/fonts/font.ttf', size)
     label = font.render(text, True, color)
     return label.get_width()
 
@@ -68,7 +69,7 @@ def draw_list():
 
 
 def draw_help():
-    key_text_font = pygame.font.Font("resources/fonts/font.ttf", int(60 // k))
+    key_text_font = pygame.font.Font("/usr/share/oldreality/app/resources/fonts/font.ttf", int(60 // k))
 
     key_paddings = (30 // k, 20 // k)
     title_indent = 20 // k
