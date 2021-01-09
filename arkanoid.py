@@ -194,13 +194,13 @@ def draw_bricks():
                 print(ball.top, elem[0].bottom)
                 print("collide")
                 el = elem[0]
-                if abs(ball.right - el.left) < 10 * 2 if int(k) == 1 else 1:
+                if abs(ball.right - el.left) < 30 / k:
                     v_x *= -1
-                elif abs(ball.left - el.right) < 10 * 2 if int(k) == 1 else 1:
+                elif abs(ball.left - el.right) < 30 / k:
                     v_x *= -1
-                elif abs(ball.bottom - el.top) < 10 * 2 if int(k) == 1 else 1 and v_y > 0:
+                elif abs(ball.bottom - el.top) < 30 / k and v_y > 0:
                     v_y *= -1
-                elif abs(ball.top - el.bottom) < 10 * 2 if int(k) == 1 else 1 and v_y < 0:
+                elif abs(ball.top - el.bottom) < 30 / k and v_y < 0:
                     v_y *= -1
 
                 if elem[1] == 0:
@@ -211,7 +211,7 @@ def draw_bricks():
                         elem[-1] += 1
                         elem[2] = (255, 255, 0)
                     else:
-                        score += 5
+                        score += 10
                         bricks.remove(elem)
 
     else:
