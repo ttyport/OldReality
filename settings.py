@@ -149,6 +149,7 @@ def main_menu():
                 elif event.key == pygame.K_RETURN:
                     write_config()
                     reconfig()
+                    edited = False
 
                 elif event.key == pygame.K_ESCAPE:
                     import main
