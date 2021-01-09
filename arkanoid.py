@@ -42,7 +42,7 @@ top_left_y = screen_height - play_height - 2
 level = 1
 
 v_x = random.choice((-10, 10))
-v_y = 10
+v_y = -10
 v_player = 0
 
 time = None
@@ -199,26 +199,27 @@ def draw_bricks():
 
         for elem in bricks:
             if ball.colliderect(elem[0]):
+                print(ball.top, elem[0].bottom)
+                print("collide")
                 el = elem[0]
-                if abs(ball.right - el.left) < 15:
+                if abs(ball.right - el.left) < 30 / k:
                     v_x *= -1
-                elif abs(ball.left - el.right) < 15:
+                elif abs(ball.left - el.right) < 30 / k:
                     v_x *= -1
-                elif abs(ball.bottom - el.top) < 15 and v_y > 0:
+                elif abs(ball.bottom - el.top) < 30 / k and v_y > 0:
                     v_y *= -1
-                elif abs(ball.top - el.bottom) < 15 and v_y < 0:
+                elif abs(ball.top - el.bottom) < 30 / k and v_y < 0:
                     v_y *= -1
 
                 if elem[1] == 0:
                     score += 5
                     bricks.remove(elem)
                 elif elem[1] == 2:
-                    print(elem)
                     if elem[-1] < 1:
                         elem[-1] += 1
                         elem[2] = (255, 255, 0)
                     else:
-                        score += 5
+                        score += 10
                         bricks.remove(elem)
 
     else:
@@ -249,7 +250,6 @@ def draw_bricks():
 
 def main():
     global v_player, v_y, v_x, lives, level, time, score
-    level = 1
     score = 0
     lives = 5
     init_objects()
@@ -286,7 +286,7 @@ def main():
 
             pygame.draw.rect(window, (0, 255, 0), border, 5)
             pygame.draw.rect(window, (0, 255, 0), player, border_radius=5)
-            pygame.draw.rect(window, (0, 255, 0), ball, border_radius=int(ball_size / 2))
+            pygame.draw.rect(window, (0, 255, 0), ball)
             draw_text_middle(data["title"], int(100 / k), (0, 255, 0), window, delta_y=-450 / k)
             draw_text_middle(f"{data['score']}: {score}", int(75 / k), (0, 255, 0), window, delta_y=-450 / k,
                              delta_x=-screen_width / 3)
@@ -312,6 +312,7 @@ def main():
             draw_text_middle("Level Up!", int(100 // k), (0, 255, 0), window)
             restart()
             main_menu(True)
+
     pygame.quit()
 
 
