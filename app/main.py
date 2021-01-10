@@ -6,6 +6,11 @@ import json
 
 from common.configmodel import Config
 
+if os.path.exists("/usr/share/oldreality/"):
+    resources_path = "/usr/share/oldreality/app/resources/"
+else:
+    resources_path = "resources/"
+
 if not os.path.exists(f"{str(os.path.expanduser('~'))}/.oldreality/"):
     os.makedirs(f"{str(os.path.expanduser('~'))}/.oldreality/")
     make_config = open(f"{str(os.path.expanduser('~'))}/.oldreality/config.txt", "w+", encoding="utf-8")
@@ -33,7 +38,7 @@ with open(f"{str(os.path.expanduser('~'))}/.oldreality/config.txt", encoding="ut
             screen_width = config.screen_width
             screen_height = config.screen_height
 
-with open(f"/usr/share/oldreality/app/resources/langs/main/{lang}.json", encoding="utf-8") as text:
+with open(f"{resources_path}langs/main/{lang}.json", encoding="utf-8") as text:
     data = json.load(text)
 
 
@@ -47,7 +52,7 @@ x_coord = 0
 
 
 def load_image(name, colorkey=None):
-    fullname = f"/usr/share/oldreality/app/resources/images/{name}"
+    fullname = f"{resources_path}images/{name}"
     # если файл не существует, то выходим
     if not os.path.isfile(fullname):
         sys.exit()
@@ -61,7 +66,7 @@ for i, el in enumerate(games_list):
 
 def draw_text_middle(text, size, color, surface, delta_x=0, delta_y=0, left=False):
     size = size - 5 * (1 if int(k) == 2 else 2)
-    font = pygame.font.Font(f'/usr/share/oldreality/app/resources/fonts/font.ttf', size)
+    font = pygame.font.Font(f'{resources_path}fonts/font.ttf', size)
     label = font.render(text, True, color)
     if left:
         surface.blit(label, (screen_width / 2 + delta_x,

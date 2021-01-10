@@ -7,6 +7,13 @@ from common.learning_controls import LearningControlsSurface, KeySurface
 from common.configmodel import Config
 from common.surface_combiner import Alignment, get_surfaces_into_column
 
+
+if os.path.exists("/usr/share/oldreality/"):
+    resources_path = "/usr/share/oldreality/app/resources/"
+else:
+    resources_path = "resources/"
+
+
 configs = [
     Config('4k', 1610, 1400),
     Config('fullhd', 805, 700)
@@ -18,6 +25,7 @@ clock = pygame.time.Clock()
 screen_width = 1610
 screen_height = 1400
 
+
 with open(f"{str(os.path.expanduser('~'))}/.oldreality/config.txt", encoding="utf-8") as conf:
     conf = conf.read().split("\n")
     resolution = conf[0].split("=")[1].lower()
@@ -27,7 +35,7 @@ with open(f"{str(os.path.expanduser('~'))}/.oldreality/config.txt", encoding="ut
             screen_width = config.screen_width
             screen_height = config.screen_height
 
-with open(f"/usr/share/oldreality/app/resources/langs/arkanoid/{lang}.json", encoding="utf-8") as text:
+with open(f"{resources_path}langs/arkanoid/{lang}.json", encoding="utf-8") as text:
     data = json.load(text)
 
 k = 1610 // screen_width
@@ -84,9 +92,9 @@ def init_bricks():
             if bricks[-1][1] == 0:
                 bricks[-1].append((0, 255, 0))
             elif bricks[-1][1] == 1:
-                bricks[-1].append((255, 0, 0))
+                bricks[-1].append((192, 192, 192))
             else:
-                bricks[-1].append((255, 165, 0))
+                bricks[-1].append((255, 255, 0))
             if bricks[-1][1] == 2:
                 bricks[-1].append(0)
     if level == 3:
@@ -101,7 +109,7 @@ def init_bricks():
 
 
 def draw_text_middle(text, size, color, surface, delta_x=0, delta_y=0, left=False):
-    font = pygame.font.Font('/usr/share/oldreality/app/resources/fonts/font.ttf', size)
+    font = pygame.font.Font(f'{resources_path}fonts/font.ttf', size)
     label = font.render(text, True, color)
     if left:
         surface.blit(label, (screen_width / 2 + delta_x,
@@ -126,7 +134,7 @@ def restart():
         while run:
             window.fill((0, 0, 0))
 
-            font = pygame.font.Font('/usr/share/oldreality/app/resources/fonts/font.ttf', int(80 / k))
+            font = pygame.font.Font(f'{resources_path}fonts/font.ttf', int(80 / k))
             game_over_texts = [font.render(data[key], True, (0, 255, 0)) for key in ("first_lose", "second", "third")]
             game_over_texts.insert(1, pygame.Surface((100, game_over_texts[0].get_height())))
 
@@ -165,7 +173,7 @@ def draw_ball():
         v_x *= -1
     elif ball.right >= border.right - 5:
         v_x *= -1
-    elif ball.top <= border.top + 5:
+    elif ball.top <= border.top - 5:
         v_y *= -1
 
     if ball.colliderect(player):
@@ -178,7 +186,7 @@ def draw_ball():
         elif abs(ball.top - player.bottom) < 15 and v_y < 0:
             v_y *= -1
 
-    if ball.bottom > border.bottom + 5:
+    if ball.bottom > border.bottom - 5 * k:
         lives -= 1
         time = pygame.time.get_ticks()
 
@@ -216,7 +224,7 @@ def draw_bricks():
                 elif elem[1] == 2:
                     if elem[-1] < 1:
                         elem[-1] += 1
-                        elem[2] = (255, 255, 0)
+                        elem[2] = (0, 255, 0)
                     else:
                         score += 10
                         bricks.remove(elem)
@@ -226,7 +234,7 @@ def draw_bricks():
         while run:
             window.fill((0, 0, 0))
 
-            font = pygame.font.Font('/usr/share/oldreality/app/resources/fonts/font.ttf', int(80 / k))
+            font = pygame.font.Font(f'{resources_path}fonts/font.ttf', int(80 / k))
             game_over_texts = [font.render(data[key], True, (0, 255, 0)) for key in ("first_won", "second", "third")]
             game_over_texts.insert(1, pygame.Surface((100, game_over_texts[0].get_height())))
 
@@ -276,6 +284,14 @@ def main():
                     main.main()
                 if event.key == pygame.K_SPACE:
                     paused = not paused
+                if event.key == pygame.K_g and level < 3:
+                    level += 1
+                    lives = 5
+                    time = pygame.time.get_ticks()
+                    # Level up message 🤷
+                    draw_text_middle("Level Up!", int(100 // k), (0, 255, 0), window)
+                    restart()
+                    main_menu(True)
         if not paused:
             draw_player()
             draw_ball()
@@ -331,8 +347,8 @@ def check_pause(paused):
 
 
 def get_instruction(title: str, padding=60 // k) -> pygame.Surface:
-    title_font = pygame.font.Font("/usr/share/oldreality/app/resources/fonts/font.ttf", 120 // k)
-    key_text_font = pygame.font.Font("/usr/share/oldreality/app/resources/fonts/font.ttf", 60 // k)
+    title_font = pygame.font.Font(f"{resources_path}fonts/font.ttf", 120 // k)
+    key_text_font = pygame.font.Font(f"{resources_path}fonts/font.ttf", 60 // k)
 
     key_paddings = (30//k, 20//k)
     title_indent = 20//k
