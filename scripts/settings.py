@@ -1,7 +1,7 @@
 import pygame
 import json
-from common.learning_controls import LearningControlsSurface, KeySurface, InstructionSurface
-from configmodel import Config
+from common.learning_controls import KeySurface
+from scripts.configmodel import Config
 
 
 def reconfig():
