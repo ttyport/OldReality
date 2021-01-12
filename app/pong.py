@@ -26,7 +26,7 @@ clock = pygame.time.Clock()
 screen_width = 1600
 screen_height = 1400
 
-with open(f"{str(os.path.expanduser('~'))}/.oldreality/config.txt", encoding="utf-8") as conf:
+with open(f"{str(os.path.expanduser('~'))}/.config/oldreality/config.txt", encoding="utf-8") as conf:
     conf = conf.read().split("\n")
     resolution = conf[0].split("=")[1].lower()
     lang = conf[1].split("=")[1].lower()
@@ -91,9 +91,13 @@ def ai():
 
 
 def restart():
-    global v_x, v_y, time
-
+    global v_x, v_y, time, opponent, player
+    if player.center != (75, 739):
+        player = pygame.Rect(20 / k + top_left_x, play_height / 2 + 20 / k + top_left_x,
+                             platform_width, platform_height)
+    opponent = pygame.Rect(play_width + 20 / k, play_height / 2 + 20 / k + top_left_x, platform_width, platform_height)
     ball.center = (play_width / 2 + top_left_x, play_height / 2 + top_left_y)
+
     current_time = pygame.time.get_ticks()
 
     if current_time - time < 700:
@@ -162,9 +166,9 @@ def main():
                 quit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_DOWN:
-                    v_player += 10
+                    v_player += 15
                 elif event.key == pygame.K_UP:
-                    v_player -= 10
+                    v_player -= 15
                 if event.key == pygame.K_SPACE:
                     paused = not paused
 
@@ -174,9 +178,9 @@ def main():
 
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_DOWN:
-                    v_player -= 10
+                    v_player -= 15
                 elif event.key == pygame.K_UP:
-                    v_player += 10
+                    v_player += 15
         if not paused:
             draw_ball()
             draw_player()

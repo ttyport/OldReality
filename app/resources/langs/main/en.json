@@ -3,5 +3,6 @@
   "pong": "pong",
   "arkanoid": "arkanoid",
   "settings": "settings",
-  "title": "Main menu"
+  "title": "Main menu",
+  "quit": "quit"
 }

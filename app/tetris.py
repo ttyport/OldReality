@@ -41,7 +41,7 @@ pygame.mixer.init()
 clear_rows_sound = pygame.mixer.Sound(f"{resources_path}sounds/beep.ogg")
 speed_up_sound = pygame.mixer.Sound(f"{resources_path}sounds/score.ogg")
 
-with open(f"{str(os.path.expanduser('~'))}/.oldreality/config.txt", encoding="utf-8") as conf:
+with open(f"{str(os.path.expanduser('~'))}/.config/oldreality/config.txt", encoding="utf-8") as conf:
     conf = conf.read().split("\n")
     resolution = conf[0].split("=")[1].lower()
     lang = conf[1].split("=")[1].lower()
@@ -521,9 +521,8 @@ def main():
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    run = False
-                    pygame.display.quit()
-                    quit()
+                    import main
+                    main.main()
                 elif event.key == pygame.K_RETURN:
                     run = False
                     main_menu()

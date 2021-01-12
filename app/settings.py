@@ -12,11 +12,12 @@ else:
 
 def reconfig():
     global lang, res, screen_width, screen_height, window, k, data
+
     configs = [
         Config('4K', 1600, 1400),
         Config('FullHD', 800, 700)
     ]
-    with open(f"{str(os.path.expanduser('~'))}/.oldreality/config.txt", encoding="utf-8") as conf:
+    with open(f"{str(os.path.expanduser('~'))}/.config/oldreality/config.txt", encoding="utf-8") as conf:
         conf = conf.read().split("\n")
         res = conf[0].split("=")[1]
         lang = conf[1].split("=")[1]
@@ -30,10 +31,11 @@ def reconfig():
 
     window = pygame.display.set_mode((screen_width, screen_height))
     k = 1600 / screen_width
+    pygame.display.set_caption(data["title"])
 
 
 def write_config():
-    with open(f"{str(os.path.expanduser('~'))}/.oldreality/config.txt", "w", encoding="utf-8") as conf:
+    with open(f"{str(os.path.expanduser('~'))}/.config/oldreality/config.txt", "w", encoding="utf-8") as conf:
         print(f"Resolution={config[1]}", file=conf)
         print(f"Lang={config[0]}", file=conf)
 
@@ -193,6 +195,5 @@ settings = [language, resolution]
 x_coord = 0
 
 window = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption(data["title"])
 
 main_menu()

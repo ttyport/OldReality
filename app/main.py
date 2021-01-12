@@ -11,9 +11,9 @@ if os.path.exists("/usr/share/oldreality/"):
 else:
     resources_path = "resources/"
 
-if not os.path.exists(f"{str(os.path.expanduser('~'))}/.oldreality/"):
-    os.makedirs(f"{str(os.path.expanduser('~'))}/.oldreality/")
-    make_config = open(f"{str(os.path.expanduser('~'))}/.oldreality/config.txt", "w+", encoding="utf-8")
+if not os.path.exists(f"{str(os.path.expanduser('~'))}/.config/oldreality/"):
+    os.makedirs(f"{str(os.path.expanduser('~'))}/.config/oldreality/")
+    make_config = open(f"{str(os.path.expanduser('~'))}/.config/oldreality/config.txt", "w+", encoding="utf-8")
     print("Resolution=FullHD\nLang=en", file=make_config)
     make_config.close()
 
@@ -28,7 +28,7 @@ clock = pygame.time.Clock()
 screen_width = 1600
 screen_height = 1400
 
-with open(f"{str(os.path.expanduser('~'))}/.oldreality/config.txt", encoding="utf-8") as conf:
+with open(f"{str(os.path.expanduser('~'))}/.config/oldreality/config.txt", encoding="utf-8") as conf:
     conf = conf.read().split("\n")
     resolution = conf[0].split("=")[1].lower()
     lang = conf[1].split("=")[1].lower()
@@ -41,11 +41,9 @@ with open(f"{str(os.path.expanduser('~'))}/.oldreality/config.txt", encoding="ut
 with open(f"{resources_path}langs/main/{lang}.json", encoding="utf-8") as text:
     data = json.load(text)
 
-
 k = 1600 / screen_width
 
-
-games_list = ["tetris", "pong", "arkanoid", "settings"]
+games_list = ["tetris", "pong", "arkanoid", "settings", "quit"]
 image_list = []
 
 x_coord = 0
@@ -61,7 +59,8 @@ def load_image(name, colorkey=None):
 
 
 for i, el in enumerate(games_list):
-    image_list.append(load_image(el + ".png") if i != len(games_list) - 1 else None)
+    image_list.append(load_image(el + ".png") if i not in
+                                                 [len(games_list) - 2, len(games_list) - 1] else None)
 
 
 def draw_text_middle(text, size, color, surface, delta_x=0, delta_y=0, left=False):
@@ -73,7 +72,7 @@ def draw_text_middle(text, size, color, surface, delta_x=0, delta_y=0, left=Fals
                              screen_height / 2 + delta_y))
     else:
         surface.blit(label, (screen_width / 2 - (label.get_width() / 2) + delta_x,
-                            screen_height / 2 - label.get_height() * 2 + delta_y))
+                             screen_height / 2 - label.get_height() * 2 + delta_y))
 
 
 def update_cursor():
@@ -98,6 +97,8 @@ def main():
     while running:
         window.fill((0, 0, 0))
         draw_text_middle("OldReality", int(160 / k), (0, 255, 0), window, delta_y=-300 / k)
+        draw_text_middle('author yayguy4618, GPLv3 license', int(40 // k), (0, 255, 0), window,
+                         delta_y=(screen_height) // 2, delta_x=-(screen_width - 550 // k) // 2)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -115,9 +116,14 @@ def main():
                     else:
                         x_coord = len(games_list) - 1
                 elif event.key == pygame.K_RETURN:
-                    pygame.display.set_caption(data[games_list[x_coord]])
-                    game = importlib.import_module(games_list[x_coord])
-                    game.main_menu()
+                    if x_coord != len(games_list) - 1:
+                        pygame.display.set_caption(data[games_list[x_coord]])
+                        game = importlib.import_module(games_list[x_coord])
+                        game.main_menu()
+                    else:
+                        running = False
+                        quit()
+
         update_cursor()
         draw_list()
         pygame.display.update()

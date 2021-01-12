@@ -26,7 +26,7 @@ screen_width = 1610
 screen_height = 1400
 
 
-with open(f"{str(os.path.expanduser('~'))}/.oldreality/config.txt", encoding="utf-8") as conf:
+with open(f"{str(os.path.expanduser('~'))}/.config/oldreality/config.txt", encoding="utf-8") as conf:
     conf = conf.read().split("\n")
     resolution = conf[0].split("=")[1].lower()
     lang = conf[1].split("=")[1].lower()
@@ -150,8 +150,8 @@ def restart():
                     if event.key == pygame.K_RETURN:
                         main_menu()
                     elif event.key == pygame.K_ESCAPE:
-                        run = False
-                        quit()
+                        import main
+                        main.main()
         pygame.quit()
     else:
         ball.x, ball.y = player.center[0] - ball_size / 2, player.top - ball_size
@@ -173,7 +173,7 @@ def draw_ball():
         v_x *= -1
     elif ball.right >= border.right - 5:
         v_x *= -1
-    elif ball.top <= border.top - 5:
+    elif ball.top <= top_left_y + 5:
         v_y *= -1
 
     if ball.colliderect(player):
@@ -186,7 +186,7 @@ def draw_ball():
         elif abs(ball.top - player.bottom) < 15 and v_y < 0:
             v_y *= -1
 
-    if ball.bottom > border.bottom - 5 * k:
+    if ball.bottom > border.bottom:
         lives -= 1
         time = pygame.time.get_ticks()
 
@@ -257,7 +257,6 @@ def draw_bricks():
 
 def main():
     global v_player, v_y, v_x, lives, level, time, score
-    score = 0
     lives = 5
     init_objects()
     init_bricks()
