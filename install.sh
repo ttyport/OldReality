@@ -14,13 +14,15 @@ echo "[Desktop Entry]
 Encoding=UTF-8
 Version=1.0
 Type=Application
+Description=Collection of old retro games
 Categories=Game;
 Name=oldreality
 Exec=oldreality
+Icon=oldreality
 Terminal=false
 " > /usr/share/applications/oldreality.desktop
 
-cp oldreality.png ~/.icons/oldreality.png
+cp oldreality.png /usr/share/pixmaps/oldreality.png
 
 chmod +x /usr/bin/oldreality
 
