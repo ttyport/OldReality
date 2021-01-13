@@ -161,6 +161,7 @@ def main_menu():
 
                 elif event.key == pygame.K_ESCAPE:
                     import main
+                    main.reconfig()
                     main.main()
             if config == startup_config:
                 edited = False

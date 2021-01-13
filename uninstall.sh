@@ -7,5 +7,7 @@ fi
 
 rm /usr/bin/oldreality
 
+rm /usr/share/applications/oldreality.desktop
+
 rm -r /usr/share/oldreality/
 

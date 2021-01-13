@@ -6,30 +6,35 @@ import json
 
 from common.configmodel import Config
 
+
 if os.path.exists("/usr/share/oldreality/"):
     resources_path = "/usr/share/oldreality/app/resources/"
 else:
     resources_path = "resources/"
 
-if not os.path.exists(f"{str(os.path.expanduser('~'))}/.config/oldreality/"):
-    os.makedirs(f"{str(os.path.expanduser('~'))}/.config/oldreality/")
-    make_config = open(f"{str(os.path.expanduser('~'))}/.config/oldreality/config.txt", "w+", encoding="utf-8")
-    print("Resolution=FullHD\nLang=en", file=make_config)
-    make_config.close()
 
-configs = [
-    Config('4k', 1600, 1400),
-    Config('fullhd', 800, 700)
-]
+def reconfig():
+    global resources_path, configs, clock, screen_width, screen_height, resolution, data, k
 
-pygame.init()
-clock = pygame.time.Clock()
+    if not os.path.exists(f"{str(os.path.expanduser('~'))}/.config/oldreality/"):
+        os.makedirs(f"{str(os.path.expanduser('~'))}/.config/oldreality/")
+        make_config = open(f"{str(os.path.expanduser('~'))}/.config/oldreality/config.txt", "w+", encoding="utf-8")
+        print("Resolution=FullHD\nLang=en", file=make_config)
+        make_config.close()
 
-screen_width = 1600
-screen_height = 1400
+    configs = [
+        Config('4k', 1600, 1400),
+        Config('fullhd', 800, 700)
+    ]
+    pygame.init()
+    clock = pygame.time.Clock()
 
-with open(f"{str(os.path.expanduser('~'))}/.config/oldreality/config.txt", encoding="utf-8") as conf:
-    conf = conf.read().split("\n")
+    screen_width = 1600
+    screen_height = 1400
+
+    with open(f"{str(os.path.expanduser('~'))}/.config/oldreality/config.txt", encoding="utf-8") as conf:
+        conf = conf.read().split("\n")
+
     resolution = conf[0].split("=")[1].lower()
     lang = conf[1].split("=")[1].lower()
 
@@ -38,10 +43,13 @@ with open(f"{str(os.path.expanduser('~'))}/.config/oldreality/config.txt", encod
             screen_width = config.screen_width
             screen_height = config.screen_height
 
-with open(f"{resources_path}langs/main/{lang}.json", encoding="utf-8") as text:
-    data = json.load(text)
+    k = 1600 / screen_width
 
-k = 1600 / screen_width
+    with open(f"{resources_path}langs/main/{lang}.json", encoding="utf-8") as text:
+        data = json.load(text)
+
+    pygame.display.set_caption(data["title"])
+
 
 games_list = ["tetris", "pong", "arkanoid", "settings", "quit"]
 image_list = []
@@ -50,6 +58,7 @@ x_coord = 0
 
 
 def load_image(name, colorkey=None):
+    global resources_path
     fullname = f"{resources_path}images/{name}"
     # если файл не существует, то выходим
     if not os.path.isfile(fullname):
@@ -93,6 +102,7 @@ def draw_list():
 
 def main():
     global x_coord
+    reconfig()
     running = True
     while running:
         window.fill((0, 0, 0))
@@ -129,6 +139,11 @@ def main():
         pygame.display.update()
     pygame.quit()
 
+
+k, configs, clock, screen_width, screen_height, resolution, data = \
+    None, None, None, None, None, None, None
+
+reconfig()
 
 window = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption(data["title"])
