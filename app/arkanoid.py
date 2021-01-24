@@ -326,9 +326,9 @@ def main():
             draw_text_middle("Level Up!", int(100 // k), (0, 255, 0), window)
             restart()
             main_menu(True)
+        clock.tick(720)
 
     pygame.quit()
-
 
 def next_lvl():
     pass
