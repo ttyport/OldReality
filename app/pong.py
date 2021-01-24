@@ -6,12 +6,10 @@ import os
 from common.learning_controls import KeySurface, LearningControlsSurface
 from common.configmodel import Config
 
-
 if os.path.exists("/usr/share/oldreality/"):
     resources_path = "/usr/share/oldreality/app/resources/"
 else:
     resources_path = "resources/"
-
 
 configs = [
     Config('4k', 1600, 1400),
@@ -92,9 +90,6 @@ def ai():
 
 def restart():
     global v_x, v_y, time, opponent, player
-    if player.center != (75, 739):
-        player = pygame.Rect(20 / k + top_left_x, play_height / 2 + 20 / k + top_left_x,
-                             platform_width, platform_height)
     opponent = pygame.Rect(play_width + 20 / k, play_height / 2 + 20 / k + top_left_x, platform_width, platform_height)
     ball.center = (play_width / 2 + top_left_x, play_height / 2 + top_left_y)
 
@@ -115,7 +110,7 @@ def restart():
 
 
 def draw_ball():
-    global v_x, v_y, time, opponent_score, player_score
+    global v_x, v_y, time, opponent_score, player_score, player
     ball.x += v_x
     ball.y += v_y
 
@@ -124,10 +119,14 @@ def draw_ball():
         pygame.mixer.Sound.play(bounce)
     if ball.left <= top_left_x:
         opponent_score += 1
+        player = pygame.Rect(20 / k + top_left_x, play_height / 2 + 20 / k + top_left_x,
+                             platform_width, platform_height)
         time = pygame.time.get_ticks()
         pygame.mixer.Sound.play(win)
     elif ball.right > top_left_x + play_width:
         player_score += 1
+        player = pygame.Rect(20 / k + top_left_x, play_height / 2 + 20 / k + top_left_x,
+                             platform_width, platform_height)
         time = pygame.time.get_ticks()
         pygame.mixer.Sound.play(win)
     if ball.colliderect(opponent) and v_x > 0:
@@ -225,8 +224,8 @@ def get_instruction(title: str, padding=60 // k) -> pygame.Surface:
     title_font = pygame.font.Font(f"{resources_path}fonts/font.ttf", 120 // k)
     key_text_font = pygame.font.Font(f"{resources_path}fonts/font.ttf", 60 // k)
 
-    key_paddings = (30//k, 20//k)
-    title_indent = 20//k
+    key_paddings = (30 // k, 20 // k)
+    title_indent = 20 // k
 
     arrow_up_text = KeySurface(key_text_font.render("↑", True, (0, 255, 0)), (0, 255, 0), (0, 0, 0), key_paddings)
     arrow_down_text = KeySurface(key_text_font.render("↓", True, (0, 255, 0)), (0, 255, 0), (0, 0, 0), key_paddings)
@@ -251,7 +250,7 @@ def main_menu():
         window.fill((0, 0, 0))
 
         main_menu_surface = get_instruction(data["start_text"])
-        main_menu_rect = main_menu_surface.get_rect(center=(screen_width//2, screen_height//2))
+        main_menu_rect = main_menu_surface.get_rect(center=(screen_width // 2, screen_height // 2))
         window.blit(main_menu_surface, main_menu_rect)
         pygame.display.update()
         for event in pygame.event.get():
