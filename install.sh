@@ -23,7 +23,7 @@ Icon=oldreality
 Terminal=false
 " > /usr/share/applications/oldreality.desktop
 
-cp oldreality.png /usr/share/pixmaps/oldreality.png
+cp app/resources/icon/oldreality.png /usr/share/pixmaps/oldreality.png
 
 chmod +x /usr/bin/oldreality
 
