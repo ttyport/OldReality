@@ -23,7 +23,7 @@ Linux:
 sudo sh install.sh  # Installing game
 ```
 
-### Deletition
+### Deletion
 
 Linux:
 
